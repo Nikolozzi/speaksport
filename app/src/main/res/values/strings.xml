@@ -1,0 +1,209 @@
+<resources>
+    <string name="app_name">SpeakSport</string>
+    <string name="title_home">Home</string>
+    <string name="title_bookmarks">Bookmarks</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="avatar_description">user avatar picture</string>
+    <string name="username_default">John Doe</string>
+    <string name="default_time">1h ago</string>
+    <string name="main_text">Hi everyone, I want to schedule a baseball event tomorrow. There\'s a
+        stadium in Varketili. Please see the full description for more details.</string>
+    <string name="category_tag">category tag</string>
+    <string name="default_sport">Baseball</string>
+    <string name="horiz_menu_description">horizontal three dots to open options menu for the post</string>
+    <string name="event_desc">event post picture</string>
+    <string name="default_event_date">25 September</string>
+    <string name="action_search">Search</string>
+    <string name="action_add">Add post</string>
+    <string name="bookmark">Bookmark</string>
+    <string name="report">Report</string>
+    <string name="share">Share</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="new_post_title">New Post</string>
+    <string name="edittext_title">Title</string>
+    <string name="edittext_description">Description</string>
+    <string name="start_time">Start Time</string>
+    <string name="end_time">End Time</string>
+    <string name="location">Location</string>
+    <string name="topic">Topic</string>
+    <string name="close_sports_popup_window">close sports popup window</string>
+    <string name="add_event">Add Event</string>
+    <string name="location_pic_desc">small earth icon</string>
+    <string name="default_event_location">Rustaveli Ave 42, Tbilisi, Georgia</string>
+    <string name="add_post">Add Post</string>
+    <string name="profile">Profile</string>
+    <string name="my_events">My events</string>
+    <string name="my_posts">My posts</string>
+    <string name="log_out">Log out</string>
+    <string name="settings">Settings</string>
+    <string name="log_out_image">log out image</string>
+    <string name="right_arrow_img_in_nav_header">right arrow img in nav header</string>
+    <string name="nav_sign_up">Sign up / Log in</string>
+    <string name="user_icon_not_logged_in">not logged in user\'s icon</string>
+    <string name="not_logged_in_text">Sign up / Log in to connect to sports enthusiasts from all over the world!</string>
+
+    <string-array name="sports_names_list">
+        <item>kayaking</item>
+        <item>bobsleigh</item>
+        <item>canoeing</item>
+        <item>cross-country skiing</item>
+        <item>rafting</item>
+        <item>skeleton</item>
+        <item>skibobbing</item>
+        <item>surfing</item>
+        <item>snorkeling</item>
+        <item>olympic swimming</item>
+        <item>bodyboarding</item>
+        <item>diving</item>
+        <item>freediving</item>
+        <item>paddleboarding</item>
+        <item>rowing</item>
+        <item>scuba diving</item>
+        <item>synchronized swimming</item>
+        <item>aerobics</item>
+        <item>aikido</item>
+        <item>archery</item>
+        <item>artistic gymnastics</item>
+        <item>baton twirling</item>
+        <item>bodybuilding</item>
+        <item>boxing</item>
+        <item>cross-country equestrianism</item>
+        <item>cross-country running</item>
+        <item>cycling</item>
+        <item>discus throw</item>
+        <item>equestrianism</item>
+        <item>fencing</item>
+        <item>figure skating</item>
+        <item>horse racing</item>
+        <item>judo</item>
+        <item>karate</item>
+        <item>kendo</item>
+        <item>kickboxing</item>
+        <item>kung fu</item>
+        <item>long jump</item>
+        <item>marathon</item>
+        <item>mixed martial arts</item>
+        <item>Muay Thai</item>
+        <item>pole vault</item>
+        <item>powerlifting</item>
+        <item>racewalking</item>
+        <item>rhythmic gymnastics</item>
+        <item>sprint</item>
+        <item>sumo</item>
+        <item>sword-fighting</item>
+        <item>trail running</item>
+        <item>trampolining</item>
+        <item>tumbling</item>
+        <item>ultimate</item>
+        <item>walking</item>
+        <item>weightlifting</item>
+        <item>wrestling</item>
+        <item>baseball</item>
+        <item>basketball</item>
+        <item>tennis</item>
+        <item>badminton</item>
+        <item>bowling</item>
+        <item>cricket</item>
+        <item>curling</item>
+        <item>dodgeball</item>
+        <item>football</item>
+        <item>golf</item>
+        <item>handball</item>
+        <item>hockey</item>
+        <item>horseball</item>
+        <item>hurling</item>
+        <item>ice hockey</item>
+        <item>kickball</item>
+        <item>lacrosse</item>
+        <item>paddle</item>
+        <item>polo</item>
+        <item>racquetball</item>
+        <item>rinkball</item>
+        <item>rounders</item>
+        <item>rugby</item>
+        <item>soccer</item>
+        <item>softball</item>
+        <item>squash</item>
+        <item>table tennis</item>
+        <item>unicycling basketball</item>
+        <item>unicycling handball</item>
+        <item>unicycling hockey</item>
+        <item>volleyball</item>
+        <item>water polo</item>
+        <item>BASE jumping</item>
+        <item>abseiling</item>
+        <item>bouldering</item>
+        <item>gliding</item>
+        <item>kiteboarding</item>
+        <item>kitesurfing</item>
+        <item>parachuting</item>
+        <item>paragliding</item>
+        <item>parasailing</item>
+        <item>skateboarding</item>
+        <item>skydiving</item>
+        <item>skysurfing</item>
+        <item>snowboarding</item>
+        <item>wakeboarding</item>
+        <item>windsurfing</item>
+        <item>climbing</item>
+        <item>cross-country cycling</item>
+        <item>hiking</item>
+        <item>mountaineering</item>
+        <item>drifting</item>
+        <item>formula racing</item>
+        <item>kart racing</item>
+        <item>rallycross</item>
+        <item>Go</item>
+        <item>bridge</item>
+        <item>checkers</item>
+        <item>chess</item>
+        <item>mahjong</item>
+        <item>airsoft</item>
+        <item>aquathlon</item>
+        <item>ballooning</item>
+        <item>barrel racing</item>
+        <item>biathlon</item>
+        <item>capoeira</item>
+        <item>cheerleading</item>
+        <item>CrossFit</item>
+        <item>dancing</item>
+        <item>darts</item>
+        <item>decathlon</item>
+        <item>foosball</item>
+        <item>gymkhana</item>
+        <item>heptathlon</item>
+        <item>jogging</item>
+        <item>laser tag</item>
+        <item>paintball</item>
+        <item>parkour</item>
+        <item>petanque</item>
+        <item>pool</item>
+        <item>triathlon</item>
+        <item>arm wrestling</item>
+        <item>taekwondo</item>
+        <item>luge</item>
+        <item>sambo</item>
+        <item>Brazilian Jiu-jitsu</item>
+        <item>ballet</item>
+    </string-array>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_username">Username</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_log_in">Log in</string>
+    <string name="action_sign_up">Sign up</string>
+    <string name="action_log_in_short">Log in</string>
+    <string name="action_sign_up_short">Sign up</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="invalid_email">Not a valid email</string>
+    <string name="login_failed">"Login failed"</string>
+    <string name="log_in_header_text">Log in to SpeakSport</string>
+    <string name="new_to_speaksport">New to SpeakSport?</string>
+    <string name="sign_up">SIGN UP</string>
+    <string name="create_an_account">Create an account</string>
+    <string name="log_in">LOG IN</string>
+    <string name="already_a_member">Already a member?</string>
+</resources>
