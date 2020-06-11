@@ -206,4 +206,8 @@
     <string name="create_an_account">Create an account</string>
     <string name="log_in">LOG IN</string>
     <string name="already_a_member">Already a member?</string>
+    <string name="post_comment_icon">post comment icon</string>
+    <string name="comment_num_default">15</string>
+    <string name="event_going_icon">event going icon</string>
+    <string name="subscribers_num_default">155</string>
 </resources>

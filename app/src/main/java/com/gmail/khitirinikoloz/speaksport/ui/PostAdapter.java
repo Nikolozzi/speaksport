@@ -11,10 +11,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.gmail.khitirinikoloz.speaksport.R;
+import com.gmail.khitirinikoloz.speaksport.data.login.SessionManager;
 import com.gmail.khitirinikoloz.speaksport.entity.EventPost;
 import com.gmail.khitirinikoloz.speaksport.model.Post;
 
@@ -25,10 +27,12 @@ import java.util.List;
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
     private final List<Post> posts;
     private final Context context;
+    private final SessionManager sessionManager;
 
     public PostAdapter(Context context, List<Post> names) {
         posts = new ArrayList<>(names);
         this.context = context;
+        sessionManager = new SessionManager(context);
     }
 
     @NonNull
@@ -62,10 +66,35 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                     dateFormat.format(eventPost.getEndTime().getTime());
             holder.dateView.setText(formattedDateTime);
 
-            holder.mEventLayout.setVisibility(View.VISIBLE);
+            holder.eventLayout.setVisibility(View.VISIBLE);
+            holder.goingLayout.setVisibility(View.VISIBLE);
+            if (!sessionManager.isUserLoggedIn()) {
+                holder.goingLayout.setEnabled(false);
+            }
         }
 
-        holder.mMoreButton.setOnClickListener(this::showPostMenu);
+        holder.moreButton.setOnClickListener(this::showPostMenu);
+        holder.goingLayout.setOnClickListener(v -> increaseEventSubscribers(holder));
+    }
+
+    private void increaseEventSubscribers(@NonNull PostViewHolder holder) {
+        //add the current user to the event, change the goingImg tint to green and increment the subscriber number.
+        //If the api response returns the user is already subscribed, unsubscribe, change the
+        // image tint back to default black and decrement the number.
+
+        if (!holder.isSubscribed) {
+            holder.goingImg.setColorFilter(ContextCompat.getColor(context, R.color.subscribed_img_tint));
+            int currentSubscribers = Integer.parseInt(holder.eventSubscribers.getText().toString());
+            holder.eventSubscribers.setText(String.valueOf(currentSubscribers + 1));
+
+            holder.isSubscribed = true;
+        } else {
+            holder.goingImg.clearColorFilter();
+            int currentSubscribers = Integer.parseInt(holder.eventSubscribers.getText().toString());
+            holder.eventSubscribers.setText(String.valueOf(currentSubscribers - 1));
+
+            holder.isSubscribed = false;
+        }
     }
 
     @Override
@@ -73,7 +102,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         return posts.size();
     }
 
-    public void addPost(Post newPost){
+    public void addPost(Post newPost) {
         this.posts.add(newPost);
         notifyDataSetChanged();
     }
@@ -89,14 +118,19 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         private final ImageView locationImg;
         private final ImageView avatarImg;
         private final ImageView topicImg;
+        private final ImageView goingImg;
 
         private final TextView authorView;
         private final TextView titleView;
         private final TextView topicView;
-        //view container that holds event ImageView and TextView
-        private final RelativeLayout mEventLayout;
         private final TextView dateView;
-        private final ImageButton mMoreButton;
+        private final TextView eventSubscribers;
+        //view container that holds event ImageView and TextView
+        private final RelativeLayout eventLayout;
+        private final RelativeLayout goingLayout;
+        private final ImageButton moreButton;
+
+        private boolean isSubscribed;
 
         PostViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -104,13 +138,16 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             eventImg = itemView.findViewById(R.id.event_pic);
             avatarImg = itemView.findViewById(R.id.avatar);
             topicImg = itemView.findViewById(R.id.topic_pic);
+            goingImg = itemView.findViewById(R.id.subscriber_pic);
 
             authorView = itemView.findViewById(R.id.username);
             titleView = itemView.findViewById(R.id.main_text);
             topicView = itemView.findViewById(R.id.topic);
             dateView = itemView.findViewById(R.id.event_date);
-            mMoreButton = itemView.findViewById(R.id.icon_more);
-            mEventLayout = itemView.findViewById(R.id.event_container);
+            eventSubscribers = itemView.findViewById(R.id.subscriber_number);
+            moreButton = itemView.findViewById(R.id.icon_more);
+            eventLayout = itemView.findViewById(R.id.event_container);
+            goingLayout = itemView.findViewById(R.id.event_subscribers_container);
         }
     }
 }

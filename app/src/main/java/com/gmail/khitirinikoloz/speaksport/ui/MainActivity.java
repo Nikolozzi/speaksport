@@ -111,6 +111,8 @@ public class MainActivity extends AppCompatActivity
                 invalidateOptionsMenu();
                 toolbarImg.setImageDrawable(ContextCompat.getDrawable(this,
                         R.drawable.ic_not_signed_user));
+                finish();
+                startActivity(getIntent());
                 break;
             }
             case R.id.settings_nav:

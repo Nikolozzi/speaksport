@@ -21,8 +21,10 @@
 
             <RelativeLayout
                 android:id="@+id/event_container"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:layout_marginRight="5dp"
                 android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -38,16 +40,17 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
-                    android:layout_marginLeft="5dp"
+                    android:layout_marginLeft="10dp"
                     android:layout_toEndOf="@id/event_pic"
                     android:layout_toRightOf="@id/event_pic"
+                    android:maxLines="3"
                     android:text="@string/default_event_date" />
 
                 <ImageView
                     android:id="@+id/event_location_pic"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:layout_below="@id/event_pic"
+                    android:layout_below="@id/event_date"
                     android:layout_marginTop="5dp"
                     android:contentDescription="@string/location_pic_desc" />
 
@@ -55,12 +58,13 @@
                     android:id="@+id/event_location"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/event_pic"
+                    android:layout_below="@id/event_date"
                     android:layout_marginStart="10dp"
-                    android:layout_marginLeft="5dp"
+                    android:layout_marginLeft="10dp"
                     android:layout_marginTop="5dp"
                     android:layout_toEndOf="@id/event_location_pic"
                     android:layout_toRightOf="@id/event_location_pic"
+                    android:maxLines="4"
                     android:text="@string/default_event_location" />
 
             </RelativeLayout>
@@ -94,12 +98,14 @@
 
                 <TextView
                     android:id="@+id/username"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
+                    android:maxLines="1"
                     android:text="@string/username_default"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                     android:textSize="13sp"
+                    app:layout_constraintEnd_toStartOf="@id/time"
                     app:layout_constraintStart_toEndOf="@id/cardview_avatar"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -107,11 +113,12 @@
                     android:id="@+id/time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
                     android:text="@string/default_time"
                     android:textSize="12sp"
+                    app:layout_constraintBaseline_toBaselineOf="@id/username"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
@@ -126,11 +133,11 @@
 
             <RelativeLayout
                 android:id="@+id/tag_container"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_marginLeft="5dp"
                 android:layout_marginTop="10dp"
+                android:gravity="start"
+                app:layout_constraintEnd_toStartOf="@id/comment_container"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/main_text">
 
@@ -152,6 +159,68 @@
                     android:textSize="12sp" />
             </RelativeLayout>
 
+            <RelativeLayout
+                android:id="@+id/comment_container"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="end"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toStartOf="@id/event_subscribers_container"
+                app:layout_constraintStart_toEndOf="@id/tag_container"
+                app:layout_constraintTop_toBottomOf="@id/main_text">
+
+                <ImageView
+                    android:id="@+id/comment_pic"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:contentDescription="@string/post_comment_icon"
+                    android:src="@drawable/comment" />
+
+                <TextView
+                    android:id="@+id/comment_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_toEndOf="@id/comment_pic"
+                    android:layout_toRightOf="@id/comment_pic"
+                    android:maxLines="2"
+                    android:text="@string/comment_num_default" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/event_subscribers_container"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="start"
+                android:visibility="invisible"
+                app:layout_constraintEnd_toStartOf="@id/icon_more"
+                app:layout_constraintStart_toEndOf="@id/comment_container"
+                app:layout_constraintTop_toBottomOf="@id/main_text">
+
+                <ImageView
+                    android:id="@+id/subscriber_pic"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:contentDescription="@string/event_going_icon"
+                    app:srcCompat="@drawable/ic_event_going" />
+
+                <TextView
+                    android:id="@+id/subscriber_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@id/subscriber_pic"
+                    android:layout_toRightOf="@id/subscriber_pic"
+                    android:maxLines="2"
+                    android:text="@string/subscribers_num_default" />
+
+            </RelativeLayout>
+
             <ImageButton
                 android:id="@+id/icon_more"
                 android:layout_width="wrap_content"
@@ -159,8 +228,9 @@
                 android:layout_marginTop="10dp"
                 android:background="@android:color/white"
                 android:contentDescription="@string/horiz_menu_description"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/main_text"
+                app:layout_constraintTop_toBottomOf="parent"
                 app:srcCompat="@drawable/ic_more_horiz" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
