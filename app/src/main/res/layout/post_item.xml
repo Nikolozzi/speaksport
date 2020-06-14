@@ -25,7 +25,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="5dp"
                 android:layout_marginRight="5dp"
-                android:visibility="visible"
+                android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
@@ -43,8 +43,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_toEndOf="@id/event_pic"
                     android:layout_toRightOf="@id/event_pic"
-                    android:maxLines="3"
-                    android:text="@string/default_event_date" />
+                    android:maxLines="3" />
 
                 <ImageView
                     android:id="@+id/event_location_pic"
@@ -64,8 +63,7 @@
                     android:layout_marginTop="5dp"
                     android:layout_toEndOf="@id/event_location_pic"
                     android:layout_toRightOf="@id/event_location_pic"
-                    android:maxLines="4"
-                    android:text="@string/default_event_location" />
+                    android:maxLines="4" />
 
             </RelativeLayout>
 

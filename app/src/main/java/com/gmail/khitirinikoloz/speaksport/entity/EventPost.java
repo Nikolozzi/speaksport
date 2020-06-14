@@ -34,6 +34,7 @@ public class EventPost implements Post {
         return topic;
     }
 
+    @Override
     public String getDescription() {
         return description;
     }
