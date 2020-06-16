@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -13,6 +14,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -25,11 +27,13 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, FragmentManager.OnBackStackChangedListener {
 
     private SessionManager sessionManager;
     private NavigationView navigationView;
     private ImageView toolbarImg;
+    private BottomNavigationView navView;
+    private FragmentManager fragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +46,7 @@ public class MainActivity extends AppCompatActivity
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.actionbar_title);
 
-        BottomNavigationView navView = findViewById(R.id.nav_view);
+        navView = findViewById(R.id.nav_view);
         //navView.setBackgroundColor(getResources().getColor(R.color.colorPrimaryLight));
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -72,6 +76,15 @@ public class MainActivity extends AppCompatActivity
         }
 
         invalidateOptionsMenu();
+
+        fragmentManager = getSupportFragmentManager();
+        fragmentManager.addOnBackStackChangedListener(this);
+    }
+
+    @Override
+    public void onBackStackChanged() {
+        if (fragmentManager.getBackStackEntryCount() == 0 && navView.getVisibility() == View.GONE)
+            navView.setVisibility(View.VISIBLE);
     }
 
     @Override

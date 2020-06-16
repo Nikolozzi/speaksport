@@ -1,8 +1,10 @@
 package com.gmail.khitirinikoloz.speaksport.ui.home;
 
+import com.gmail.khitirinikoloz.speaksport.entity.Comment;
 import com.gmail.khitirinikoloz.speaksport.entity.EventPost;
 import com.gmail.khitirinikoloz.speaksport.model.Post;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
@@ -22,6 +24,8 @@ public class SampleDataGenerator {
             "the list of names of their teammates. Depending on the number of participants the " +
             "event may be split on 2 days.";
 
+    private static final String USERNAME = "John Miller";
+    private static final String COMMENT = "The event looks pretty interesting, is it free?";
 
     static List<Post> getSamplePosts() {
         return Arrays.asList(
@@ -32,5 +36,14 @@ public class SampleDataGenerator {
                 new EventPost(EVENT_TITLE_3, DESCRIPTION, Calendar.getInstance(), Calendar.getInstance(),
                         "Kutaisi, Rustaveli Avenue", "powerlifting")
         );
+    }
+
+    public static List<Comment> getSampleComments() {
+        List<Comment> comments = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            comments.add(new Comment(USERNAME, COMMENT));
+        }
+
+        return comments;
     }
 }

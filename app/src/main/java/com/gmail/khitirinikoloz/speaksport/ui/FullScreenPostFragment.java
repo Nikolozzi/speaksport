@@ -15,9 +15,17 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.gmail.khitirinikoloz.speaksport.R;
+import com.gmail.khitirinikoloz.speaksport.entity.Comment;
+import com.gmail.khitirinikoloz.speaksport.ui.home.SampleDataGenerator;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class FullScreenPostFragment extends Fragment {
 
@@ -87,6 +95,15 @@ public class FullScreenPostFragment extends Fragment {
                 subscribersContainer.setVisibility(View.VISIBLE);
             }
         }
+
+        final RecyclerView recyclerView = view.findViewById(R.id.comments_list);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        final List<Comment> sampleComments = new ArrayList<>(SampleDataGenerator.getSampleComments());
+        final CommentAdapter commentAdapter = new CommentAdapter(sampleComments, getContext());
+        recyclerView.setAdapter(commentAdapter);
+
+        BottomNavigationView navigationView = requireActivity().findViewById(R.id.nav_view);
+        navigationView.setVisibility(View.GONE);
     }
 
     private void showMap(View v) {

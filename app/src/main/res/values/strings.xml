@@ -214,4 +214,7 @@
     <string name="event_going_icon">event going icon</string>
     <string name="subscribers_num_default">155</string>
     <string name="further_details">Further details:</string>
+    <string name="comments_label">Comments</string>
+    <string name="comment_sample">This is what I commented on the event post</string>
+    <string name="add_comment">Add comment</string>
 </resources>

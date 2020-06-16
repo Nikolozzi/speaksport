@@ -189,8 +189,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             fullScreenPostFragment.setArguments(bundle);
             MainActivity activity = (MainActivity) context;
             activity.getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.home_container, fullScreenPostFragment, null)
-                    .setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_bottom)
+                    .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right,
+                            R.anim.enter_from_right, R.anim.exit_to_right)
+                    .add(R.id.home_container, fullScreenPostFragment, null)
                     .addToBackStack(null)
                     .commit();
         }
