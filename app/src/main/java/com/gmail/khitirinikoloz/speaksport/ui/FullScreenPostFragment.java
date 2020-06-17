@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -49,10 +50,12 @@ public class FullScreenPostFragment extends Fragment {
         ImageView locationImg = view.findViewById(R.id.event_location_pic);
         ImageView topicImg = view.findViewById(R.id.topic_pic);
         ImageView avatarImg = view.findViewById(R.id.avatar);
+        ImageView commentAvatarImg = view.findViewById(R.id.comment_avatar);
         Glide.with(getContext()).load(R.drawable.event).into(eventImg);
         Glide.with(getContext()).load(R.drawable.world).into(locationImg);
         Glide.with(getContext()).load(R.drawable.topic).into(topicImg);
         Glide.with(getContext()).load(R.drawable.avatar).into(avatarImg);
+        Glide.with(getContext()).load(R.drawable.avatar).into(commentAvatarImg);
 
         TextView authorView = view.findViewById(R.id.username);
         TextView titleView = view.findViewById(R.id.main_text);
@@ -61,6 +64,8 @@ public class FullScreenPostFragment extends Fragment {
         TextView topicView = view.findViewById(R.id.topic);
         TextView eventView = view.findViewById(R.id.event_date);
         TextView locationView = view.findViewById(R.id.event_location);
+        EditText commentEditText = view.findViewById(R.id.comment);
+        commentEditText.setOnClickListener(v -> openCommentWindow());
 
         RelativeLayout eventContainer = view.findViewById(R.id.event_container);
         RelativeLayout locationContainer = view.findViewById(R.id.location_container);
@@ -104,6 +109,14 @@ public class FullScreenPostFragment extends Fragment {
 
         BottomNavigationView navigationView = requireActivity().findViewById(R.id.nav_view);
         navigationView.setVisibility(View.GONE);
+    }
+
+    private void openCommentWindow() {
+        final CommentFragment commentFragment = new CommentFragment();
+        requireActivity().getSupportFragmentManager().beginTransaction()
+                .add(R.id.fullscreen_container, commentFragment, null)
+                .addToBackStack(null)
+                .commit();
     }
 
     private void showMap(View v) {
