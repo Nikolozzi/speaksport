@@ -5,6 +5,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -21,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.gmail.khitirinikoloz.speaksport.R;
+import com.gmail.khitirinikoloz.speaksport.data.login.SessionManager;
 import com.gmail.khitirinikoloz.speaksport.entity.Comment;
 import com.gmail.khitirinikoloz.speaksport.ui.home.SampleDataGenerator;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -109,6 +112,16 @@ public class FullScreenPostFragment extends Fragment {
 
         BottomNavigationView navigationView = requireActivity().findViewById(R.id.nav_view);
         navigationView.setVisibility(View.GONE);
+
+        final LinearLayout commentContainer = view.findViewById(R.id.add_comment_container);
+        final SessionManager sessionManager = new SessionManager(requireContext());
+        if (!sessionManager.isUserLoggedIn())
+            commentContainer.setVisibility(View.GONE);
+        else
+            commentContainer.setVisibility(View.VISIBLE);
+
+        view.findViewById(R.id.icon_more).setVisibility(View.GONE);
+        setHasOptionsMenu(true);
     }
 
     private void openCommentWindow() {
@@ -128,5 +141,11 @@ public class FullScreenPostFragment extends Fragment {
         if (intent.resolveActivity(requireActivity().getPackageManager()) != null) {
             startActivity(intent);
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.post_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 }
