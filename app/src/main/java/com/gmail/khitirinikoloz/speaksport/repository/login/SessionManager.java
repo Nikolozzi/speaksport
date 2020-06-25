@@ -1,4 +1,4 @@
-package com.gmail.khitirinikoloz.speaksport.data.login;
+package com.gmail.khitirinikoloz.speaksport.repository.login;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

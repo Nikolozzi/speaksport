@@ -4,9 +4,9 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.gmail.khitirinikoloz.speaksport.data.login.LoginRepository;
-import com.gmail.khitirinikoloz.speaksport.data.login.Result;
-import com.gmail.khitirinikoloz.speaksport.data.login.model.LoggedInUser;
+import com.gmail.khitirinikoloz.speaksport.repository.login.LoginRepository;
+import com.gmail.khitirinikoloz.speaksport.repository.login.Result;
+import com.gmail.khitirinikoloz.speaksport.repository.login.model.LoggedInUser;
 import com.gmail.khitirinikoloz.speaksport.R;
 
 public class LoginViewModel extends ViewModel {

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,16 +14,21 @@ import android.widget.Toast;
 
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.gmail.khitirinikoloz.speaksport.R;
-import com.gmail.khitirinikoloz.speaksport.data.login.SessionManager;
+import com.gmail.khitirinikoloz.speaksport.repository.login.SessionManager;
+import com.gmail.khitirinikoloz.speaksport.entity.User;
 import com.gmail.khitirinikoloz.speaksport.ui.MainActivity;
 import com.gmail.khitirinikoloz.speaksport.ui.signup.SignUpFragment;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity implements SignUpFragment.OnSignUpCallback {
 
     private LoginViewModel loginViewModel;
     private SessionManager sessionManager;
@@ -124,5 +130,20 @@ public class LoginActivity extends AppCompatActivity {
 
     private void showLoginFailed(@StringRes Integer errorString) {
         Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onSignUp(User user) {
+        final String message = String.format("Welcome %s, please Log in", user.getUsername());
+        final CoordinatorLayout coordinatorLayout = findViewById(R.id.snackbar_signup_success);
+        coordinatorLayout.setVisibility(View.VISIBLE);
+        coordinatorLayout.bringToFront();
+        final Snackbar snackbar = Snackbar.make(coordinatorLayout, message, BaseTransientBottomBar.LENGTH_LONG);
+        snackbar.setBackgroundTint(ContextCompat.getColor(this, R.color.color_sign_up_success));
+        final Snackbar.SnackbarLayout snackbarLayout = (Snackbar.SnackbarLayout) snackbar.getView();
+        snackbarLayout.setRotation(180);
+        final TextView snackbarText = snackbarLayout.findViewById(com.google.android.material.R.id.snackbar_text);
+        snackbarText.setTextSize(18);
+        snackbar.show();
     }
 }

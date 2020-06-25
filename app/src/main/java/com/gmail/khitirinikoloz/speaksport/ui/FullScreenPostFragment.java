@@ -23,7 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.gmail.khitirinikoloz.speaksport.R;
-import com.gmail.khitirinikoloz.speaksport.data.login.SessionManager;
+import com.gmail.khitirinikoloz.speaksport.repository.login.SessionManager;
 import com.gmail.khitirinikoloz.speaksport.entity.Comment;
 import com.gmail.khitirinikoloz.speaksport.ui.home.SampleDataGenerator;
 import com.google.android.material.bottomnavigation.BottomNavigationView;

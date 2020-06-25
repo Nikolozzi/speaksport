@@ -1,4 +1,4 @@
-package com.gmail.khitirinikoloz.speaksport.data.login.model;
+package com.gmail.khitirinikoloz.speaksport.repository.login.model;
 
 /**
  * Data class that captures user information for logged in users retrieved from LoginRepository

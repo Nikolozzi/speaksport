@@ -1,4 +1,4 @@
-package com.gmail.khitirinikoloz.speaksport.data.login;
+package com.gmail.khitirinikoloz.speaksport.repository.login;
 
 /**
  * A generic class that holds a result success w/ data or an error exception.

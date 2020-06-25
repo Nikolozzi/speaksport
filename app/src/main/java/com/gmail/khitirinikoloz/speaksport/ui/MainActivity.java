@@ -21,7 +21,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.gmail.khitirinikoloz.speaksport.R;
-import com.gmail.khitirinikoloz.speaksport.data.login.SessionManager;
+import com.gmail.khitirinikoloz.speaksport.repository.login.SessionManager;
 import com.gmail.khitirinikoloz.speaksport.ui.login.LoginActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
