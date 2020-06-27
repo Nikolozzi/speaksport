@@ -1,4 +1,4 @@
-package com.gmail.khitirinikoloz.speaksport.repository.login;
+package com.gmail.khitirinikoloz.speaksport.ui.login;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -6,43 +6,40 @@ import android.content.SharedPreferences;
 
 import androidx.annotation.NonNull;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-
-public class SessionManager {
+public final class SessionManager {
     private final SharedPreferences preferences;
     private final SharedPreferences.Editor editor;
-    private final Context context;
 
     private static final String PREF_NAME = "Pref";
     private static final String IS_LOGIN = "isLoggedIn";
+    private static final String KEY_ID = "id";
     private static final String KEY_USERNAME = "username";
+    private static final String KEY_TOKEN = "token";
 
     @SuppressLint("CommitPrefEdits")
     public SessionManager(@NonNull final Context context) {
-        this.context = context;
         preferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         editor = preferences.edit();
     }
 
-    public void createLoginSession(@NonNull final String username) {
-        Objects.requireNonNull(username);
-
+    public void createLoginSession(@NonNull final LoggedInUser loginResponse) {
         editor.putBoolean(IS_LOGIN, true);
-        editor.putString(KEY_USERNAME, username);
+        editor.putInt(KEY_ID, loginResponse.getUserId());
+        editor.putString(KEY_USERNAME, loginResponse.getUsername());
+        editor.putString(KEY_TOKEN, loginResponse.getToken());
 
         editor.apply();
     }
 
-    public Map<String, String> getUserDetails() {
-        final Map<String, String> user = new HashMap<>();
-        user.put(KEY_USERNAME, preferences.getString(KEY_USERNAME, null));
+    public LoggedInUser getLoggedInUser() {
+        final int id = preferences.getInt(KEY_ID, -1);
+        final String username = preferences.getString(KEY_USERNAME, null);
+        final String token = preferences.getString(KEY_TOKEN, null);
 
-        return user;
+        return new LoggedInUser(id, username, token);
     }
 
-    public void logoutUser() {
+    public void logOutUser() {
         editor.clear();
         editor.apply();
     }

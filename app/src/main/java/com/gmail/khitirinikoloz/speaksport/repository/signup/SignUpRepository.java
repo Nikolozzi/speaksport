@@ -3,15 +3,13 @@ package com.gmail.khitirinikoloz.speaksport.repository.signup;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.gmail.khitirinikoloz.speaksport.api.UserApi;
-import com.gmail.khitirinikoloz.speaksport.entity.User;
+import com.gmail.khitirinikoloz.speaksport.model.User;
 import com.gmail.khitirinikoloz.speaksport.repository.signup.error.EmailError;
 import com.gmail.khitirinikoloz.speaksport.repository.signup.error.UsernameError;
-
-import java.io.IOException;
+import com.gmail.khitirinikoloz.speaksport.repository.signup.response.UserResponse;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -19,15 +17,15 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class SignUpRepository {
+import static com.gmail.khitirinikoloz.speaksport.repository.Constants.API_BASE_URL;
+import static com.gmail.khitirinikoloz.speaksport.repository.Constants.NOT_FOUND;
+import static com.gmail.khitirinikoloz.speaksport.repository.Constants.SUCCESS;
 
-    public static final int SUCCESS = 200;
-    public static final int NOT_FOUND = 404;
+public class SignUpRepository {
     private static final String LOG_TAG = SignUpRepository.class.getSimpleName();
     private static volatile SignUpRepository instance;
-    private static final String USER_BASE_URL = "http://10.0.2.2:8200/";
     private UserApi userApi;
-    private MutableLiveData<User> registeredUser = new MutableLiveData<>();
+    private MutableLiveData<UserResponse> userResponse = new MutableLiveData<>();
     private MutableLiveData<EmailError> emailError = new MutableLiveData<>();
     private MutableLiveData<UsernameError> usernameError = new MutableLiveData<>();
 
@@ -49,17 +47,23 @@ public class SignUpRepository {
             @Override
             public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
                 if (response.isSuccessful() && response.code() == SUCCESS) {
-                    emailError.postValue(new EmailError("this email is already taken"));
+                    emailError.postValue(new EmailError
+                            ("this email is already taken", false));
                     return;
                 }
 
-                if (response.code() == NOT_FOUND)
-                    emailError.postValue(new EmailError(EmailError.NO_EMAIL_ERROR));
+                if (response.code() == NOT_FOUND) {
+                    emailError.postValue(new EmailError(EmailError.NO_EMAIL_ERROR, false));
+                    return;
+                }
+
+                Log.d(LOG_TAG, "Email request response: \n" + response.raw());
             }
 
             @Override
             public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
-                Log.d(LOG_TAG, t.getMessage());
+                emailError.postValue(new EmailError(null, true));
+                Log.d(LOG_TAG, t.toString());
             }
         });
     }
@@ -70,48 +74,53 @@ public class SignUpRepository {
             @Override
             public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
                 if (response.isSuccessful() && response.code() == SUCCESS) {
-                    usernameError.postValue(new UsernameError("this username is already taken"));
+                    usernameError.postValue(new UsernameError
+                            ("this username is already taken", false));
                     return;
                 }
-                if (response.code() == NOT_FOUND)
-                    usernameError.postValue(new UsernameError(UsernameError.NO_USERNAME_ERROR));
+                if (response.code() == NOT_FOUND) {
+                    usernameError.postValue(new UsernameError
+                            (UsernameError.NO_USERNAME_ERROR, false));
+                    return;
+                }
+
+                Log.d(LOG_TAG, "Username request response: \n" + response.raw());
             }
 
             @Override
             public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
-                Log.d(LOG_TAG, t.getMessage());
+                usernameError.postValue(new UsernameError(null, true));
+                Log.d(LOG_TAG, t.toString());
             }
         });
     }
 
     public void registerUser(@NonNull final User user) {
-        Call<User> call = userApi.addUser(user);
-        call.enqueue(new Callback<User>() {
+        Call<UserResponse> call = userApi.addUser(user);
+        call.enqueue(new Callback<UserResponse>() {
             @Override
-            public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
+            public void onResponse(@NonNull Call<UserResponse> call, @NonNull Response<UserResponse> response) {
                 if (!response.isSuccessful()) {
-                    if (response.errorBody() != null) {
-                        try {
-                            Log.d(LOG_TAG, response.errorBody().string());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
+                    userResponse.postValue(new UserResponse(false, response.code()));
                     return;
                 }
 
-                registeredUser.postValue(response.body());
+                final UserResponse responseData = response.body();
+                if (responseData != null)
+                    responseData.setResponseCode(response.code());
+                userResponse.postValue(responseData);
             }
 
             @Override
-            public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
-                Log.e(LOG_TAG, t.getMessage());
+            public void onFailure(@NonNull Call<UserResponse> call, @NonNull Throwable t) {
+                userResponse.postValue(new UserResponse(true, null));
+                Log.e(LOG_TAG, t.toString());
             }
         });
     }
 
-    public LiveData<User> getRegisteredUser() {
-        return registeredUser;
+    public MutableLiveData<UserResponse> getUserResponse() {
+        return userResponse;
     }
 
     public MutableLiveData<EmailError> getEmailError() {
@@ -124,7 +133,7 @@ public class SignUpRepository {
 
     private void initializeUserApi() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(USER_BASE_URL)
+                .baseUrl(API_BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 

@@ -6,6 +6,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -21,8 +22,9 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.gmail.khitirinikoloz.speaksport.R;
-import com.gmail.khitirinikoloz.speaksport.repository.login.SessionManager;
+import com.gmail.khitirinikoloz.speaksport.ui.login.LoggedInUser;
 import com.gmail.khitirinikoloz.speaksport.ui.login.LoginActivity;
+import com.gmail.khitirinikoloz.speaksport.ui.login.SessionManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
@@ -70,15 +72,21 @@ public class MainActivity extends AppCompatActivity
             this.loadLoggedOutNavigation();
             toolbarImg.setImageDrawable(ContextCompat.getDrawable(this,
                     R.drawable.ic_not_signed_user));
-        } else {
-            this.loadLoggedInNavigation();
-            toolbarImg.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.avatar));
-        }
+        } else
+            this.setUpLoggedInView();
 
         invalidateOptionsMenu();
 
         fragmentManager = getSupportFragmentManager();
         fragmentManager.addOnBackStackChangedListener(this);
+    }
+
+    private void setUpLoggedInView() {
+        final LoggedInUser user = sessionManager.getLoggedInUser();
+        this.loadLoggedInNavigation();
+        toolbarImg.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.avatar));
+        TextView navUsername = navigationView.getHeaderView(0).findViewById(R.id.username_nav);
+        navUsername.setText(user.getUsername());
     }
 
     @Override
@@ -119,7 +127,7 @@ public class MainActivity extends AppCompatActivity
                 break;
             }
             case R.id.logout: {
-                sessionManager.logoutUser();
+                sessionManager.logOutUser();
                 this.loadLoggedOutNavigation();
                 invalidateOptionsMenu();
                 toolbarImg.setImageDrawable(ContextCompat.getDrawable(this,

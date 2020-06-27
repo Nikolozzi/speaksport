@@ -1,10 +1,8 @@
-package com.gmail.khitirinikoloz.speaksport.entity;
-
-import androidx.annotation.NonNull;
+package com.gmail.khitirinikoloz.speaksport.repository.signup.response;
 
 import java.io.Serializable;
 
-public class User implements Serializable {
+public class UserResponse implements Serializable {
     private Long id;
 
     private String username;
@@ -19,23 +17,13 @@ public class User implements Serializable {
 
     private Object photo;
 
-    public User(@NonNull final String username, @NonNull final String email, @NonNull final String password) {
-        setUsername(username);
-        setEmail(email);
-        setPassword(password);
-    }
+    private boolean failedRequest;
 
-    public User(@NonNull final String username, @NonNull final String email, @NonNull final String password,
-                final String fullName, final String description, final Object photo) {
-        setUsername(username);
-        setEmail(email);
-        setPassword(password);
-        setFullName(fullName);
-        setDescription(description);
-        setPhoto(photo);
-    }
+    private Integer responseCode;
 
-    public User() {
+    public UserResponse(boolean failedRequest, Integer responseCode) {
+        this.failedRequest = failedRequest;
+        this.responseCode = responseCode;
     }
 
     public Long getId() {
@@ -94,10 +82,25 @@ public class User implements Serializable {
         this.photo = photo;
     }
 
-    @androidx.annotation.NonNull
+    public boolean isFailedRequest() {
+        return failedRequest;
+    }
+
+    public void setFailedRequest(boolean failedRequest) {
+        this.failedRequest = failedRequest;
+    }
+
+    public Integer getResponseCode() {
+        return responseCode;
+    }
+
+    public void setResponseCode(Integer responseCode) {
+        this.responseCode = responseCode;
+    }
+
     @Override
     public String toString() {
-        return "User{" +
+        return "UserResponse{" +
                 "id=" + id +
                 ", username='" + username + '\'' +
                 ", email='" + email + '\'' +
@@ -105,6 +108,8 @@ public class User implements Serializable {
                 ", fullName='" + fullName + '\'' +
                 ", description='" + description + '\'' +
                 ", photo=" + photo +
+                ", failedRequest=" + failedRequest +
+                ", responseCode=" + responseCode +
                 '}';
     }
 }
