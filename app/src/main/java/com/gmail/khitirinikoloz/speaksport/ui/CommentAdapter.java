@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.gmail.khitirinikoloz.speaksport.R;
-import com.gmail.khitirinikoloz.speaksport.entity.Comment;
+import com.gmail.khitirinikoloz.speaksport.model.Comment;
 
 import java.util.ArrayList;
 import java.util.List;

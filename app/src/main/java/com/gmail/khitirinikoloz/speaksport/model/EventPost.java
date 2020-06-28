@@ -1,8 +1,6 @@
-package com.gmail.khitirinikoloz.speaksport.entity;
+package com.gmail.khitirinikoloz.speaksport.model;
 
 import androidx.annotation.NonNull;
-
-import com.gmail.khitirinikoloz.speaksport.model.Post;
 
 import java.util.Calendar;
 

@@ -15,7 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.gmail.khitirinikoloz.speaksport.R;
-import com.gmail.khitirinikoloz.speaksport.entity.RegularPost;
+import com.gmail.khitirinikoloz.speaksport.model.RegularPost;
 import com.gmail.khitirinikoloz.speaksport.model.Post;
 import com.gmail.khitirinikoloz.speaksport.ui.home.HomeViewModel;
 import com.google.android.material.textfield.TextInputEditText;

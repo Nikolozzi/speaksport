@@ -1,7 +1,7 @@
 package com.gmail.khitirinikoloz.speaksport.ui.home;
 
-import com.gmail.khitirinikoloz.speaksport.entity.Comment;
-import com.gmail.khitirinikoloz.speaksport.entity.EventPost;
+import com.gmail.khitirinikoloz.speaksport.model.Comment;
+import com.gmail.khitirinikoloz.speaksport.model.EventPost;
 import com.gmail.khitirinikoloz.speaksport.model.Post;
 
 import java.util.ArrayList;

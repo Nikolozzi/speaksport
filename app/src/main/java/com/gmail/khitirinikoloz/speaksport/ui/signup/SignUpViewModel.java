@@ -5,7 +5,11 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.gmail.khitirinikoloz.speaksport.R;
-import com.gmail.khitirinikoloz.speaksport.data.signup.SignUpRepository;
+import com.gmail.khitirinikoloz.speaksport.model.User;
+import com.gmail.khitirinikoloz.speaksport.repository.signup.SignUpRepository;
+import com.gmail.khitirinikoloz.speaksport.repository.signup.error.EmailError;
+import com.gmail.khitirinikoloz.speaksport.repository.signup.error.UsernameError;
+import com.gmail.khitirinikoloz.speaksport.repository.signup.response.UserResponse;
 
 class SignUpViewModel extends ViewModel {
     private MutableLiveData<SignUpFormState> signUpFormState = new MutableLiveData<>();
@@ -21,8 +25,28 @@ class SignUpViewModel extends ViewModel {
         return signUpFormState;
     }
 
-    void signUp(String email, String username, String password) {
-        signUpRepository.signUp(email, username, password);
+    void registerUser(final User user) {
+        signUpRepository.registerUser(user);
+    }
+
+    void checkEmailAddress(final User user) {
+        signUpRepository.checkEmailAddress(user.getEmail());
+    }
+
+    void checkUsername(final User user) {
+        signUpRepository.checkUsername(user.getUsername());
+    }
+
+    LiveData<EmailError> getEmailError() {
+        return signUpRepository.getEmailError();
+    }
+
+    LiveData<UsernameError> getUsernameError() {
+        return signUpRepository.getUsernameError();
+    }
+
+    LiveData<UserResponse> getUserData() {
+        return signUpRepository.getUserResponse();
     }
 
     void signUpDataChanged(String email, String username, String password) {
