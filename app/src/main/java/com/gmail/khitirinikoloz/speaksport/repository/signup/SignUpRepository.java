@@ -26,22 +26,24 @@ public class SignUpRepository {
     private static volatile SignUpRepository instance;
     private UserApi userApi;
     private MutableLiveData<UserResponse> userResponse = new MutableLiveData<>();
-    private MutableLiveData<EmailError> emailError = new MutableLiveData<>();
-    private MutableLiveData<UsernameError> usernameError = new MutableLiveData<>();
 
     // private constructor : singleton access
     private SignUpRepository() {
         this.initializeUserApi();
     }
 
-    public synchronized static SignUpRepository getInstance() {
+    public static SignUpRepository getInstance() {
         if (instance == null) {
-            instance = new SignUpRepository();
+            synchronized (SignUpRepository.class) {
+                if (instance == null)
+                    instance = new SignUpRepository();
+            }
         }
         return instance;
     }
 
-    public void checkEmailAddress(@NonNull final String email) {
+    public void checkEmailAddress(@NonNull final String email,
+                                  @NonNull final MutableLiveData<EmailError> emailError) {
         Call<User> call = userApi.getUserByEmail(email);
         call.enqueue(new Callback<User>() {
             @Override
@@ -68,7 +70,8 @@ public class SignUpRepository {
         });
     }
 
-    public void checkUsername(@NonNull final String username) {
+    public void checkUsername(@NonNull final String username,
+                              @NonNull final MutableLiveData<UsernameError> usernameError) {
         Call<User> call = userApi.getUserByUsername(username);
         call.enqueue(new Callback<User>() {
             @Override
@@ -121,14 +124,6 @@ public class SignUpRepository {
 
     public MutableLiveData<UserResponse> getUserResponse() {
         return userResponse;
-    }
-
-    public MutableLiveData<EmailError> getEmailError() {
-        return emailError;
-    }
-
-    public MutableLiveData<UsernameError> getUsernameError() {
-        return usernameError;
     }
 
     private void initializeUserApi() {

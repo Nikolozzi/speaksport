@@ -1,5 +1,7 @@
 package com.gmail.khitirinikoloz.speaksport.repository.signup.response;
 
+import com.gmail.khitirinikoloz.speaksport.model.Photo;
+
 import java.io.Serializable;
 
 public class UserResponse implements Serializable {
@@ -15,7 +17,7 @@ public class UserResponse implements Serializable {
 
     private String description;
 
-    private Object photo;
+    private Photo photo;
 
     private boolean failedRequest;
 
@@ -74,11 +76,11 @@ public class UserResponse implements Serializable {
         this.description = description;
     }
 
-    public Object getPhoto() {
+    public Photo getPhoto() {
         return photo;
     }
 
-    public void setPhoto(Object photo) {
+    public void setPhoto(Photo photo) {
         this.photo = photo;
     }
 

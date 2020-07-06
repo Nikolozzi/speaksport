@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        tools:context=".ui.profile.ProfileActivity">
+
+        <ProgressBar
+            android:id="@+id/progress_get_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <FrameLayout
+            android:id="@+id/profile_img_container"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/profile_img_cardview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:cardCornerRadius="40dp">
+
+                <ImageView
+                    android:id="@+id/profile_img"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/user_profile_image"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/avatar" />
+
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="bottom"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginBottom="3dp"
+                    android:contentDescription="@string/camera_label_on_profile_image"
+                    android:tint="#78d9ff"
+                    android:src="@drawable/camera" />
+            </androidx.cardview.widget.CardView>
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/textview_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="3dp"
+            android:text="@string/edit"
+            android:textAppearance="@style/TextAppearance.AppCompat.Button"
+            android:textColor="@color/link"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/profile_img_container" />
+
+        <TextView
+            android:id="@+id/textview_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:padding="3dp"
+            android:text="@string/save"
+            android:textAppearance="@style/TextAppearance.AppCompat.Button"
+            android:textColor="@color/link"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/profile_img_container" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/profile_username_layout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textview_edit">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/profile_username_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints=""
+                android:background="@android:color/white"
+                android:focusable="false"
+                android:hint="@string/prompt_username"
+                android:inputType="textNoSuggestions" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/profile_email_layout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/profile_username_layout">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/profile_email_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints=""
+                android:background="@android:color/white"
+                android:focusable="false"
+                android:hint="@string/prompt_email"
+                android:inputType="textNoSuggestions" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/profile_full_name_layout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/profile_email_layout">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/profile_full_name_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints=""
+                android:background="@android:color/white"
+                android:focusable="false"
+                android:hint="@string/full_name_label"
+                android:inputType="textNoSuggestions" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/profile_description_layout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_marginTop="5dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/profile_full_name_layout">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/profile_description_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:autofillHints=""
+                android:background="@android:color/white"
+                android:focusable="false"
+                android:gravity="start"
+                android:hint="@string/description_label"
+                android:inputType="textMultiLine|textNoSuggestions" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <!--  ****** Password fields ******  -->
+
+        <!-- start of label view -->
+
+        <View
+            android:id="@+id/password_divider_1"
+            android:layout_width="0dp"
+            android:layout_height="2dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginRight="5dp"
+            android:background="#dbdbdb"
+            app:layout_constraintEnd_toStartOf="@id/change_password_label"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/profile_description_layout" />
+
+
+        <TextView
+            android:id="@+id/change_password_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:text="@string/change_password_label"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/profile_description_layout" />
+
+        <View
+            android:id="@+id/password_divider_2"
+            android:layout_width="0dp"
+            android:layout_height="2dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="50dp"
+            android:background="#dbdbdb"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/change_password_label"
+            app:layout_constraintTop_toBottomOf="@id/profile_description_layout" />
+
+        <!-- end of label view -->
+
+        <!-- Buttons -->
+
+        <TextView
+            android:id="@+id/textview_password_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="3dp"
+            android:text="@string/change"
+            android:textAppearance="@style/TextAppearance.AppCompat.Button"
+            android:textColor="@color/link"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/change_password_label" />
+
+        <TextView
+            android:id="@+id/textview_password_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:padding="3dp"
+            android:text="@string/save"
+            android:textAppearance="@style/TextAppearance.AppCompat.Button"
+            android:textColor="@color/link"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/change_password_label" />
+
+        <!-- end of buttons  -->
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/profile_old_password_layout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textview_password_edit"
+            app:passwordToggleEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/profile_old_password_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:autofillHints=""
+                android:background="@android:color/white"
+                android:focusable="false"
+                android:hint="@string/old_password"
+                android:inputType="textNoSuggestions" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/profile_new_password_layout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/profile_old_password_layout"
+            app:passwordToggleEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/profile_new_password_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:autofillHints=""
+                android:background="@android:color/white"
+                android:focusable="false"
+                android:hint="@string/new_password"
+                android:inputType="textPassword" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

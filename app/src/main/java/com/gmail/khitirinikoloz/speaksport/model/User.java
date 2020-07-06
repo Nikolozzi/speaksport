@@ -3,6 +3,7 @@ package com.gmail.khitirinikoloz.speaksport.model;
 import androidx.annotation.NonNull;
 
 import com.gmail.khitirinikoloz.speaksport.repository.signup.response.UserResponse;
+import com.gmail.khitirinikoloz.speaksport.ui.login.LoggedInUser;
 
 import java.io.Serializable;
 
@@ -19,12 +20,18 @@ public class User implements Serializable {
 
     private String description;
 
-    private Object photo;
+    private Photo photo;
 
     public User(@NonNull final String username, @NonNull final String email, @NonNull final String password) {
         setUsername(username);
         setEmail(email);
         setPassword(password);
+    }
+
+    public User(@NonNull final LoggedInUser loggedInUser) {
+        setId(loggedInUser.getUserId());
+        setEmail(loggedInUser.getEmail());
+        setUsername(loggedInUser.getUsername());
     }
 
     public User(@NonNull final UserResponse userResponse) {
@@ -88,11 +95,11 @@ public class User implements Serializable {
         this.description = description;
     }
 
-    public Object getPhoto() {
+    public Photo getPhoto() {
         return photo;
     }
 
-    public void setPhoto(Object photo) {
+    public void setPhoto(Photo photo) {
         this.photo = photo;
     }
 

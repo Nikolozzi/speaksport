@@ -1,19 +1,20 @@
 package com.gmail.khitirinikoloz.speaksport.ui.login;
 
-import java.util.Objects;
-
 public class LoggedInUser {
-    private final int userId;
-    private final String username;
+    private final long userId;
+    private String username;
+    private String email;
     private final String token;
+    private String imagePath;
 
-    public LoggedInUser(int userId, String username, String token) {
-        this.userId = Objects.requireNonNull(userId);
-        this.username = Objects.requireNonNull(username);
-        this.token = Objects.requireNonNull(token);
+    public LoggedInUser(long userId, String username, String email, String token) {
+        this.userId = userId;
+        this.username = username;
+        this.email = email;
+        this.token = token;
     }
 
-    public int getUserId() {
+    public long getUserId() {
         return userId;
     }
 
@@ -21,16 +22,27 @@ public class LoggedInUser {
         return username;
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public String getToken() {
         return token;
     }
 
-    @Override
-    public String toString() {
-        return "LoggedInUser{" +
-                "userId=" + userId +
-                ", username='" + username + '\'' +
-                ", token='" + token + '\'' +
-                '}';
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 }

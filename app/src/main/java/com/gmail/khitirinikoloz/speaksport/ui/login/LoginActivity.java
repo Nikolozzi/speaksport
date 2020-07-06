@@ -80,7 +80,7 @@ public class LoginActivity extends AppCompatActivity implements SignUpFragment.O
                 //guaranteed successful login
                 if (loginResponse.getResponseCode() >= 200 && loginResponse.getResponseCode() < 300) {
                     final LoggedInUser loggedInUser = new LoggedInUser(loginResponse.getUserId(),
-                            loginResponse.getUsername(), loginResponse.getToken());
+                            loginResponse.getUsername(), loginResponse.getEmail(), loginResponse.getToken());
                     sessionManager.createLoginSession(loggedInUser);
 
                     finish();
