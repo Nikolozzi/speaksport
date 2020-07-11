@@ -47,4 +47,17 @@ public class LoginResponse implements Serializable {
     public void setResponseCode(Integer responseCode) {
         this.responseCode = responseCode;
     }
+
+    @Override
+    public String toString() {
+        return "LoginResponse{" +
+                "userId=" + userId +
+                ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
+                ", fullName='" + fullName + '\'' +
+                ", token='" + token + '\'' +
+                ", failedRequest=" + failedRequest +
+                ", responseCode=" + responseCode +
+                '}';
+    }
 }

@@ -4,7 +4,7 @@
     <string name="title_bookmarks">Bookmarks</string>
     <string name="title_notifications">Notifications</string>
     <string name="avatar_description">user avatar picture</string>
-    <string name="username_default">John Doe</string>
+    <string name="username_default">Johnny</string>
     <string name="default_time">1h ago</string>
     <string name="main_text">Hi everyone, I want to schedule a baseball event tomorrow. There\'s a
         stadium in Varketili. Please see the full description for more details.</string>
@@ -221,4 +221,16 @@
     <string name="post">Post</string>
     <string name="dismiss">Dismiss</string>
     <string name="add_comment_title">Add Comment</string>
+    <string name="profile_title">Profile details</string>
+    <string name="full_name_label">Full name</string>
+    <string name="description_label">About me</string>
+    <string name="edit">Edit</string>
+    <string name="change">Change</string>
+    <string name="save">Save</string>
+    <string name="change_password_label">Change Password</string>
+    <string name="old_password">Old password</string>
+    <string name="new_password">New password</string>
+    <string name="user_profile_image">user profile image</string>
+    <string name="camera_label_on_profile_image">camera label on profile image</string>
+
 </resources>
