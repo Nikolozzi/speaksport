@@ -1,4 +1,4 @@
-package com.gmail.khitirinikoloz.speaksport.ui;
+package com.gmail.khitirinikoloz.speaksport.ui.post.adapter;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -17,9 +17,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.gmail.khitirinikoloz.speaksport.R;
-import com.gmail.khitirinikoloz.speaksport.ui.login.SessionManager;
-import com.gmail.khitirinikoloz.speaksport.model.EventPost;
 import com.gmail.khitirinikoloz.speaksport.model.Post;
+import com.gmail.khitirinikoloz.speaksport.ui.MainActivity;
+import com.gmail.khitirinikoloz.speaksport.ui.login.SessionManager;
+import com.gmail.khitirinikoloz.speaksport.ui.post.FullScreenPostFragment;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -29,14 +30,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     private final List<Post> posts;
     private final Context context;
     private final SessionManager sessionManager;
-    static final String USERNAME_KEY = "username";
-    static final String TITLE_KEY = "title";
-    static final String DESCRIPTION_KEY = "description";
-    static final String DATE_KEY = "date";
-    static final String LOCATION_KEY = "location";
-    static final String TOPIC_KEY = "topic";
-    static final String COMMENTS_KEY = "comments";
-    static final String SUBSCRIBERS_KEY = "subscribers";
+    public static final String USERNAME_KEY = "username";
+    public static final String TITLE_KEY = "title";
+    public static final String DESCRIPTION_KEY = "description";
+    public static final String DATE_KEY = "date";
+    public static final String LOCATION_KEY = "location";
+    public static final String TOPIC_KEY = "topic";
+    public static final String COMMENTS_KEY = "comments";
+    public static final String SUBSCRIBERS_KEY = "subscribers";
 
     public PostAdapter(Context context, List<Post> names) {
         posts = new ArrayList<>(names);
@@ -65,17 +66,15 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         Glide.with(context).load(R.drawable.avatar).into(holder.avatarImg);
         Glide.with(context).load(R.drawable.topic).into(holder.topicImg);
 
-        if (currentPost instanceof EventPost) {
-            EventPost eventPost = (EventPost) currentPost;
-
+        if (currentPost.isEvent()) {
             Glide.with(context).load(R.drawable.event).into(holder.eventImg);
             Glide.with(context).load(R.drawable.world).into(holder.locationImg);
 
             DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
-            String formattedDateTime = dateFormat.format(eventPost.getStartTime().getTime()) + " - " +
-                    dateFormat.format(eventPost.getEndTime().getTime());
+            String formattedDateTime = dateFormat.format(currentPost.getStartTime()) + " - " +
+                    dateFormat.format(currentPost.getEndTime());
             holder.dateView.setText(formattedDateTime);
-            holder.locationView.setText(eventPost.getLocation());
+            holder.locationView.setText(currentPost.getLocation());
 
             holder.eventLayout.setVisibility(View.VISIBLE);
             holder.goingLayout.setVisibility(View.VISIBLE);

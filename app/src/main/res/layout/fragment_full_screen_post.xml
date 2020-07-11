@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:clickable="true"
     android:focusable="true"
-    tools:context=".ui.FullScreenPostFragment">
+    tools:context=".ui.post.FullScreenPostFragment">
 
     <include
         android:id="@+id/fullscreen_content"

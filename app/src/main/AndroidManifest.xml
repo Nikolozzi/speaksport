@@ -26,7 +26,7 @@
                 android:value=".ui.MainActivity" />
         </activity>
         <activity
-            android:name=".ui.NewPostActivity"
+            android:name=".ui.post.NewPostActivity"
             android:theme="@style/AppTheme.NoActionBar">
 
         </activity>

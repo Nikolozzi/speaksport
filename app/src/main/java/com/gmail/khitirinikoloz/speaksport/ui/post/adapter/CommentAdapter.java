@@ -1,4 +1,4 @@
-package com.gmail.khitirinikoloz.speaksport.ui;
+package com.gmail.khitirinikoloz.speaksport.ui.post.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -21,7 +21,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
     private final List<Comment> comments;
     private final Context context;
 
-    CommentAdapter(final List<Comment> comments, final Context context) {
+    public CommentAdapter(final List<Comment> comments, final Context context) {
         this.comments = new ArrayList<>(comments);
         this.context = context;
     }

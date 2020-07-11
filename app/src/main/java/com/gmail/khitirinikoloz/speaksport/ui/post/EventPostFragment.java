@@ -1,4 +1,4 @@
-package com.gmail.khitirinikoloz.speaksport.ui;
+package com.gmail.khitirinikoloz.speaksport.ui.post;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.PopupWindow;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,9 +20,12 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.gmail.khitirinikoloz.speaksport.R;
-import com.gmail.khitirinikoloz.speaksport.model.EventPost;
 import com.gmail.khitirinikoloz.speaksport.model.Post;
+import com.gmail.khitirinikoloz.speaksport.model.User;
 import com.gmail.khitirinikoloz.speaksport.ui.home.HomeViewModel;
+import com.gmail.khitirinikoloz.speaksport.ui.login.SessionManager;
+import com.gmail.khitirinikoloz.speaksport.ui.post.viewmodel.NewPostViewModel;
+import com.gmail.khitirinikoloz.speaksport.ui.post.viewmodel.NewPostViewModelFactory;
 import com.google.android.gms.common.api.Status;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
@@ -31,9 +35,12 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.text.DateFormat;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
@@ -62,6 +69,8 @@ public class EventPostFragment extends Fragment {
 
     private NewPostActivity newPostActivity;
     private HomeViewModel homeViewModel;
+    private NewPostViewModel newPostViewModel;
+    private SessionManager sessionManager;
 
     public EventPostFragment() {
         // Required empty public constructor
@@ -80,7 +89,10 @@ public class EventPostFragment extends Fragment {
 
         //enclosing activity
         newPostActivity = (NewPostActivity) requireActivity();
+        newPostViewModel = new ViewModelProvider(newPostActivity, new NewPostViewModelFactory())
+                .get(NewPostViewModel.class);
 
+        sessionManager = new SessionManager(newPostActivity);
         Places.initialize(newPostActivity.getApplicationContext(), PLACES_API_KEY);
         Places.createClient(newPostActivity);
 
@@ -125,6 +137,8 @@ public class EventPostFragment extends Fragment {
         });
 
         saveButton.setOnClickListener(v -> saveEvent());
+
+        this.observeEventPostResponse();
     }
 
     @Override
@@ -150,6 +164,16 @@ public class EventPostFragment extends Fragment {
         }
     }
 
+    private void observeEventPostResponse() {
+        newPostViewModel.getEventResponseLiveData().observe(getViewLifecycleOwner(), post -> {
+            if (post != null) {
+                Toast.makeText(newPostActivity, "Event successfully added",
+                        Toast.LENGTH_SHORT).show();
+                Log.d(LOG_TAG, post.toString());
+            }
+        });
+    }
+
     private void saveEvent() {
         if (!allFieldsSet())
             return;
@@ -160,11 +184,17 @@ public class EventPostFragment extends Fragment {
         final String location = String.valueOf(locationEditText.getText());
         final String topic = String.valueOf(topicEditText.getText());
 
-        final Post newPost = new EventPost(title, description, startDateTime, endDateTime,
-                location, topic);
+        final User currentUser = new User(sessionManager.getLoggedInUser());
+        final Post newPost = new Post.PostBuilder(true, title, topic, currentUser)
+                .description(description)
+                .startTime(startDateTime.getTime())
+                .endTime(endDateTime.getTime())
+                .location(location)
+                .build();
 
         //temporarily
         homeViewModel.setPost(newPost);
+        newPostViewModel.addPost(newPost);
         newPostActivity.finish();
     }
 

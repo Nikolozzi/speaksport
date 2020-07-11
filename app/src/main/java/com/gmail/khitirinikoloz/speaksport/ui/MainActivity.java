@@ -29,6 +29,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.gmail.khitirinikoloz.speaksport.R;
 import com.gmail.khitirinikoloz.speaksport.model.User;
+import com.gmail.khitirinikoloz.speaksport.ui.post.NewPostActivity;
 import com.gmail.khitirinikoloz.speaksport.ui.login.LoggedInUser;
 import com.gmail.khitirinikoloz.speaksport.ui.login.LoginActivity;
 import com.gmail.khitirinikoloz.speaksport.ui.login.SessionManager;

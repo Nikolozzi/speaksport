@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.gmail.khitirinikoloz.speaksport.R;
 import com.gmail.khitirinikoloz.speaksport.model.Post;
 import com.gmail.khitirinikoloz.speaksport.ui.MainActivity;
-import com.gmail.khitirinikoloz.speaksport.ui.PostAdapter;
+import com.gmail.khitirinikoloz.speaksport.ui.post.adapter.PostAdapter;
 
 import java.util.ArrayList;
 import java.util.List;

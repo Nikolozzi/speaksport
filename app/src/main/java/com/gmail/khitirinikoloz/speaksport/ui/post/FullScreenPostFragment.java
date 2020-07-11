@@ -1,4 +1,4 @@
-package com.gmail.khitirinikoloz.speaksport.ui;
+package com.gmail.khitirinikoloz.speaksport.ui.post;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -23,9 +23,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.gmail.khitirinikoloz.speaksport.R;
+import com.gmail.khitirinikoloz.speaksport.ui.CommentFragment;
 import com.gmail.khitirinikoloz.speaksport.ui.login.SessionManager;
 import com.gmail.khitirinikoloz.speaksport.model.Comment;
 import com.gmail.khitirinikoloz.speaksport.ui.home.SampleDataGenerator;
+import com.gmail.khitirinikoloz.speaksport.ui.post.adapter.CommentAdapter;
+import com.gmail.khitirinikoloz.speaksport.ui.post.adapter.PostAdapter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.gmail.khitirinikoloz.speaksport.ui;
+package com.gmail.khitirinikoloz.speaksport.ui.post.adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +19,7 @@ public class SportsAdapter extends RecyclerView.Adapter<SportsAdapter.SportsView
     private final PopupWindow popupWindow;
     private final TextInputEditText topicEditText;
 
-    SportsAdapter(List<String> sportNames, PopupWindow popupWindow, TextInputEditText topicEditText) {
+    public SportsAdapter(List<String> sportNames, PopupWindow popupWindow, TextInputEditText topicEditText) {
         this.sportNames = sportNames;
         this.popupWindow = popupWindow;
         this.topicEditText = topicEditText;
