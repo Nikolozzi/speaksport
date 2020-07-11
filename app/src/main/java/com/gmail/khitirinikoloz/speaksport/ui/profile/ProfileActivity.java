@@ -6,6 +6,7 @@ import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
@@ -62,6 +63,7 @@ public class ProfileActivity extends AppCompatActivity {
             BuildConfig.APPLICATION_ID + ".ACTION_USER_UPDATE_BROADCAST";
     private static final int REQUEST_PICK_IMG = 1;
     private static final int REQUEST_EXTERNAL_STORAGE = 2;
+    private static final int IMAGE_QUALITY = 25;
     private EditText usernameEditText;
     private EditText emailEditText;
     private EditText fullNameEditText;
@@ -145,7 +147,14 @@ public class ProfileActivity extends AppCompatActivity {
                 imageUri = data.getData();
                 final String path = PathUtil.getRealPath(this, imageUri);
                 final File photo = new File(path);
+                try {
+                    final Bitmap bitmap = BitmapFactory.decodeFile(photo.getPath());
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, IMAGE_QUALITY, new FileOutputStream(photo));
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
 
+                progressBar.setVisibility(View.VISIBLE);
                 profileViewModel.uploadUserAvatar(loggedInUser.getUserId(), photo);
             }
         }
@@ -206,6 +215,7 @@ public class ProfileActivity extends AppCompatActivity {
                                 public boolean onResourceReady(GlideDrawable resource, Uri model, Target<GlideDrawable> target,
                                                                boolean isFromMemoryCache, boolean isFirstResource) {
                                     if (resource != null) {
+                                        progressBar.setVisibility(View.GONE);
                                         Bitmap bitmapDrawable = ((GlideBitmapDrawable) resource).getBitmap();
                                         String absPath = savePhotoToStorage(bitmapDrawable);
                                         sessionManager.saveProfileImage(absPath);
@@ -227,7 +237,7 @@ public class ProfileActivity extends AppCompatActivity {
         FileOutputStream fileOutputStream = null;
         try {
             fileOutputStream = new FileOutputStream(path);
-            bitmap.compress(Bitmap.CompressFormat.PNG, 50, fileOutputStream);
+            bitmap.compress(Bitmap.CompressFormat.PNG, IMAGE_QUALITY, fileOutputStream);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } finally {
