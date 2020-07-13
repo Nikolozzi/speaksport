@@ -2,6 +2,7 @@ package com.gmail.khitirinikoloz.speaksport.ui.post.adapter;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,17 +18,21 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.gmail.khitirinikoloz.speaksport.R;
-import com.gmail.khitirinikoloz.speaksport.model.Post;
+import com.gmail.khitirinikoloz.speaksport.repository.post.PostResponse;
+import com.gmail.khitirinikoloz.speaksport.repository.signup.response.UserResponse;
 import com.gmail.khitirinikoloz.speaksport.ui.MainActivity;
 import com.gmail.khitirinikoloz.speaksport.ui.login.SessionManager;
 import com.gmail.khitirinikoloz.speaksport.ui.post.FullScreenPostFragment;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
-    private final List<Post> posts;
+    private List<PostResponse> posts;
     private final Context context;
     private final SessionManager sessionManager;
     public static final String USERNAME_KEY = "username";
@@ -39,8 +44,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     public static final String COMMENTS_KEY = "comments";
     public static final String SUBSCRIBERS_KEY = "subscribers";
 
-    public PostAdapter(Context context, List<Post> names) {
-        posts = new ArrayList<>(names);
+    public PostAdapter(Context context) {
+        posts = new ArrayList<>();
         this.context = context;
         sessionManager = new SessionManager(context);
     }
@@ -55,26 +60,33 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull PostViewHolder holder, int position) {
-        Post currentPost = posts.get(position);
+        final PostResponse postResponse = posts.get(position);
+        final UserResponse userResponse = postResponse.getUser();
 
         //for all posts, including regular ones
-        holder.authorView.setText(R.string.username_default);
-        holder.titleView.setText(currentPost.getTitle());
-        holder.topicView.setText(currentPost.getTopic());
-        holder.description = currentPost.getDescription();
+        holder.authorView.setText(userResponse.getUsername());
+        holder.titleView.setText(postResponse.getTitle());
+        holder.description = postResponse.getDescription();
+        holder.topicView.setText(postResponse.getTopic());
+
+        //set post publication time
+        this.setPostTime(holder, postResponse.getPostedAt());
         //load icons with glide for better memory efficiency
-        Glide.with(context).load(R.drawable.avatar).into(holder.avatarImg);
+        this.loadUserImage(holder, userResponse);
+
         Glide.with(context).load(R.drawable.topic).into(holder.topicImg);
 
-        if (currentPost.isEvent()) {
+        if (postResponse.isEvent()) {
             Glide.with(context).load(R.drawable.event).into(holder.eventImg);
             Glide.with(context).load(R.drawable.world).into(holder.locationImg);
 
             DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
-            String formattedDateTime = dateFormat.format(currentPost.getStartTime()) + " - " +
-                    dateFormat.format(currentPost.getEndTime());
+            String formattedDateTime = dateFormat.format(postResponse.getStartTime()) + " - " +
+                    dateFormat.format(postResponse.getEndTime());
             holder.dateView.setText(formattedDateTime);
-            holder.locationView.setText(currentPost.getLocation());
+            holder.locationView.setText(postResponse.getLocation());
+            holder.eventSubscribersView.setText(String.valueOf(postResponse.getSubscribersNumber()));
+            holder.commentView.setText(String.valueOf(postResponse.getCommentsNumber()));
 
             holder.eventLayout.setVisibility(View.VISIBLE);
             holder.goingLayout.setVisibility(View.VISIBLE);
@@ -85,6 +97,34 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
         holder.moreButton.setOnClickListener(this::showPostMenu);
         holder.goingLayout.setOnClickListener(v -> increaseEventSubscribers(holder));
+    }
+
+    private void setPostTime(final PostViewHolder holder, final Date postedAt) {
+        final long diff = Calendar.getInstance().getTime().getTime() -
+                postedAt.getTime();
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(diff);
+        String timeText = minutes + "m ago";
+        if (minutes >= 60) {
+            long hours = TimeUnit.MINUTES.toHours(minutes);
+            timeText = hours + "h ago";
+            if (hours >= 24) {
+                long days = TimeUnit.HOURS.toDays(hours);
+                timeText = days + "d ago";
+            }
+        }
+
+        holder.publicationTime.setText(timeText);
+    }
+
+    private void loadUserImage(final PostViewHolder holder, final UserResponse userResponse) {
+        if (userResponse.getPhoto() != null) {
+            final String fileAsString = userResponse.getPhoto().getFileObject();
+            if (fileAsString != null) {
+                byte[] fileAsBytes = android.util.Base64.decode(fileAsString, Base64.DEFAULT);
+                Glide.with(context).load(fileAsBytes).into(holder.avatarImg);
+            } else
+                Glide.with(context).load(R.drawable.avatar).into(holder.avatarImg);
+        }
     }
 
     private void increaseEventSubscribers(@NonNull PostViewHolder holder) {
@@ -112,8 +152,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         return posts.size();
     }
 
-    public void addPost(Post newPost) {
-        this.posts.add(newPost);
+    public void setPosts(List<PostResponse> posts) {
+        this.posts = posts;
         notifyDataSetChanged();
     }
 
@@ -131,6 +171,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         private final ImageView goingImg;
 
         private final TextView authorView;
+        private final TextView publicationTime;
         private final TextView titleView;
         private final TextView topicView;
         private final TextView dateView;
@@ -156,6 +197,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             goingImg = itemView.findViewById(R.id.subscriber_pic);
 
             authorView = itemView.findViewById(R.id.username);
+            publicationTime = itemView.findViewById(R.id.time);
             titleView = itemView.findViewById(R.id.main_text);
             topicView = itemView.findViewById(R.id.topic);
             dateView = itemView.findViewById(R.id.event_date);

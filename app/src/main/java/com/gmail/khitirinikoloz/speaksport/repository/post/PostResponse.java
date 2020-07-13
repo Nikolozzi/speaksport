@@ -1,0 +1,139 @@
+package com.gmail.khitirinikoloz.speaksport.repository.post;
+
+import androidx.annotation.NonNull;
+
+import com.gmail.khitirinikoloz.speaksport.repository.signup.response.UserResponse;
+
+import java.io.Serializable;
+import java.util.Date;
+
+public class PostResponse implements Serializable {
+    private long id;
+    private boolean event;
+    private String title;
+    private String description;
+    private Date startTime;
+    private Date endTime;
+    private String location;
+    private String topic;
+    private UserResponse user;
+    private Date postedAt;
+    private long commentsNumber;
+    private long subscribersNumber;
+
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public boolean isEvent() {
+        return event;
+    }
+
+    public void setEvent(boolean event) {
+        this.event = event;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getTopic() {
+        return topic;
+    }
+
+    public void setTopic(String topic) {
+        this.topic = topic;
+    }
+
+    public UserResponse getUser() {
+        return user;
+    }
+
+    public void setUser(UserResponse user) {
+        this.user = user;
+    }
+
+    public Date getPostedAt() {
+        return postedAt;
+    }
+
+    public void setPostedAt(Date postedAt) {
+        this.postedAt = postedAt;
+    }
+
+    public long getCommentsNumber() {
+        return commentsNumber;
+    }
+
+    public void setCommentsNumber(long commentsNumber) {
+        this.commentsNumber = commentsNumber;
+    }
+
+    public long getSubscribersNumber() {
+        return subscribersNumber;
+    }
+
+    public void setSubscribersNumber(long subscribersNumber) {
+        this.subscribersNumber = subscribersNumber;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "PostResponse{" +
+                "id=" + id +
+                ", event=" + event +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                ", location='" + location + '\'' +
+                ", topic='" + topic + '\'' +
+                ", user=" + user +
+                ", postedAt=" + postedAt +
+                ", commentsNumber=" + commentsNumber +
+                ", subscribersNumber=" + subscribersNumber +
+                '}';
+    }
+}

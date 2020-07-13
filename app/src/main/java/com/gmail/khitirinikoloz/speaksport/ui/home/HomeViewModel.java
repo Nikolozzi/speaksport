@@ -1,28 +1,27 @@
 package com.gmail.khitirinikoloz.speaksport.ui.home;
 
-import android.app.Application;
-
-import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 
-import com.gmail.khitirinikoloz.speaksport.model.Post;
+import com.gmail.khitirinikoloz.speaksport.repository.post.PostRepository;
+import com.gmail.khitirinikoloz.speaksport.repository.post.PostResponse;
 
-public final class HomeViewModel extends AndroidViewModel {
-    //temporary impl to build bridge between homeFragment and eventPostFragment
-    private static MutableLiveData<Post> post;
+import java.util.List;
 
-    public HomeViewModel(Application application) {
-        super(application);
-        if (post == null) {
-            post = new MutableLiveData<>();
-        }
+final class HomeViewModel extends ViewModel {
+
+    private PostRepository postRepository;
+    private MutableLiveData<List<PostResponse>> postsResponse = new MutableLiveData<>();
+
+    HomeViewModel(PostRepository postRepository) {
+        this.postRepository = postRepository;
     }
 
-    public void setPost(Post newPost) {
-        post.postValue(newPost);
+    void getPosts() {
+        postRepository.getAllPosts(postsResponse);
     }
 
-    public MutableLiveData<Post> getPost() {
-        return post;
+    MutableLiveData<List<PostResponse>> getPostsResponse() {
+        return postsResponse;
     }
 }

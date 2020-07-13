@@ -2,7 +2,6 @@ package com.gmail.khitirinikoloz.speaksport.ui.post;
 
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +18,6 @@ import androidx.lifecycle.ViewModelProvider;
 import com.gmail.khitirinikoloz.speaksport.R;
 import com.gmail.khitirinikoloz.speaksport.model.Post;
 import com.gmail.khitirinikoloz.speaksport.model.User;
-import com.gmail.khitirinikoloz.speaksport.ui.home.HomeViewModel;
 import com.gmail.khitirinikoloz.speaksport.ui.login.SessionManager;
 import com.gmail.khitirinikoloz.speaksport.ui.post.viewmodel.NewPostViewModel;
 import com.gmail.khitirinikoloz.speaksport.ui.post.viewmodel.NewPostViewModelFactory;
@@ -37,7 +35,6 @@ public class RegularPostFragment extends Fragment {
     private TextInputEditText topicEditText;
     private PopupWindow popUpWindow;
     private View popUpView;
-    private HomeViewModel homeViewModel;
     private NewPostActivity newPostActivity;
     private List<TextInputEditText> requiredFields;
 
@@ -64,9 +61,6 @@ public class RegularPostFragment extends Fragment {
                 .get(NewPostViewModel.class);
         sessionManager = new SessionManager(newPostActivity);
 
-        //temporary bridge between this fragment and homeFragment to display posts.(is not correct)
-        homeViewModel = new ViewModelProvider(newPostActivity).get(HomeViewModel.class);
-
         titleEditText = view.findViewById(R.id.regular_title_edittext);
         descriptionEditText = view.findViewById(R.id.regular_description_edittext);
         topicEditText = view.findViewById(R.id.regular_topic_edittext);
@@ -90,7 +84,6 @@ public class RegularPostFragment extends Fragment {
             if (post != null) {
                 Toast.makeText(newPostActivity, "Post successfully added",
                         Toast.LENGTH_SHORT).show();
-                Log.d(LOG_TAG, post.toString());
             }
         });
     }
@@ -109,7 +102,6 @@ public class RegularPostFragment extends Fragment {
                 .build();
 
         newPostViewModel.addPost(regularPost);
-        homeViewModel.setPost(regularPost);
         newPostActivity.finish();
     }
 

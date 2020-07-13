@@ -22,7 +22,6 @@ import androidx.lifecycle.ViewModelProvider;
 import com.gmail.khitirinikoloz.speaksport.R;
 import com.gmail.khitirinikoloz.speaksport.model.Post;
 import com.gmail.khitirinikoloz.speaksport.model.User;
-import com.gmail.khitirinikoloz.speaksport.ui.home.HomeViewModel;
 import com.gmail.khitirinikoloz.speaksport.ui.login.SessionManager;
 import com.gmail.khitirinikoloz.speaksport.ui.post.viewmodel.NewPostViewModel;
 import com.gmail.khitirinikoloz.speaksport.ui.post.viewmodel.NewPostViewModelFactory;
@@ -35,12 +34,9 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.text.DateFormat;
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
@@ -68,7 +64,6 @@ public class EventPostFragment extends Fragment {
     private final Calendar endDateTime = Calendar.getInstance();
 
     private NewPostActivity newPostActivity;
-    private HomeViewModel homeViewModel;
     private NewPostViewModel newPostViewModel;
     private SessionManager sessionManager;
 
@@ -95,9 +90,6 @@ public class EventPostFragment extends Fragment {
         sessionManager = new SessionManager(newPostActivity);
         Places.initialize(newPostActivity.getApplicationContext(), PLACES_API_KEY);
         Places.createClient(newPostActivity);
-
-        //temporary bridge between this fragment and homeFragment to display posts.(is not correct)
-        homeViewModel = new ViewModelProvider(newPostActivity).get(HomeViewModel.class);
 
         titleEditText = view.findViewById(R.id.title_edittext);
         descriptionEditText = view.findViewById(R.id.description_edittext);
@@ -169,7 +161,6 @@ public class EventPostFragment extends Fragment {
             if (post != null) {
                 Toast.makeText(newPostActivity, "Event successfully added",
                         Toast.LENGTH_SHORT).show();
-                Log.d(LOG_TAG, post.toString());
             }
         });
     }
@@ -192,8 +183,6 @@ public class EventPostFragment extends Fragment {
                 .location(location)
                 .build();
 
-        //temporarily
-        homeViewModel.setPost(newPost);
         newPostViewModel.addPost(newPost);
         newPostActivity.finish();
     }

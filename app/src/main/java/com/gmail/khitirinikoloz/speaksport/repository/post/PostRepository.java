@@ -11,6 +11,8 @@ import com.gmail.khitirinikoloz.speaksport.repository.Constants;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -55,6 +57,24 @@ public class PostRepository {
             public void onFailure(@NonNull Call<Post> call, @NonNull Throwable t) {
                 eventMutableLiveData.postValue(null);
                 postMutableLiveData.postValue(null);
+                Log.d(LOG_TAG, t.toString());
+            }
+        });
+    }
+
+    public void getAllPosts(@NonNull MutableLiveData<List<PostResponse>> postsLiveData) {
+        Call<List<PostResponse>> call = postApi.getAllPosts();
+        call.enqueue(new Callback<List<PostResponse>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<PostResponse>> call, @NonNull Response<List<PostResponse>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    postsLiveData.postValue(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<PostResponse>> call, @NonNull Throwable t) {
+                postsLiveData.postValue(null);
                 Log.d(LOG_TAG, t.toString());
             }
         });

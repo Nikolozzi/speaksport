@@ -14,15 +14,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.gmail.khitirinikoloz.speaksport.R;
-import com.gmail.khitirinikoloz.speaksport.model.Post;
 import com.gmail.khitirinikoloz.speaksport.ui.MainActivity;
 import com.gmail.khitirinikoloz.speaksport.ui.post.adapter.PostAdapter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class HomeFragment extends Fragment {
+    private static final String LOG_TAG = HomeFragment.class.getSimpleName();
     private PostAdapter postAdapter;
+    private HomeViewModel homeViewModel;
+    private MainActivity mainActivity;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -34,25 +33,31 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        final HomeViewModel viewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
+        mainActivity = (MainActivity) requireActivity();
+        homeViewModel = new ViewModelProvider(mainActivity, new HomeViewModelFactory())
+                .get(HomeViewModel.class);
 
         final RecyclerView recyclerView = view.findViewById(R.id.posts_list);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(mainActivity));
 
-        //sample data
-        final List<Post> samplePosts = new ArrayList<>(SampleDataGenerator.getSamplePosts());
-
-        postAdapter = new PostAdapter(getContext(), samplePosts);
+        postAdapter = new PostAdapter(getContext());
         recyclerView.setAdapter(postAdapter);
 
-        viewModel.getPost().observe(getViewLifecycleOwner(), post -> {
-            postAdapter.addPost(post);
-        });
-
-        @SuppressWarnings("ConstantConditions") // suppressing possible NPE on
+        @SuppressWarnings("ConstantConditions")
         // getSupportActionBar - it's set in MainActivity
         final TextView actionBarText = ((MainActivity) requireActivity()).getSupportActionBar()
                 .getCustomView().findViewById(R.id.action_bar_title);
         actionBarText.setText(R.string.title_home);
+
+        homeViewModel.getPosts();
+        this.observePosts();
+    }
+
+    private void observePosts() {
+        homeViewModel.getPostsResponse().observe(getViewLifecycleOwner(), postResponses -> {
+            if (postResponses != null) {
+                postAdapter.setPosts(postResponses);
+            }
+        });
     }
 }

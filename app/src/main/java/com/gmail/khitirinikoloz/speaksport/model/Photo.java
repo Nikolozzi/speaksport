@@ -1,5 +1,7 @@
 package com.gmail.khitirinikoloz.speaksport.model;
 
+import androidx.annotation.NonNull;
+
 import java.io.Serializable;
 
 public class Photo implements Serializable {
@@ -11,6 +13,7 @@ public class Photo implements Serializable {
     private String size;
     private String lastUpdateTime;
     private String lastUpdatedBy;
+    private String fileObject;
 
     public Photo() {
     }
@@ -79,6 +82,15 @@ public class Photo implements Serializable {
         this.lastUpdatedBy = lastUpdatedBy;
     }
 
+    public String getFileObject() {
+        return fileObject;
+    }
+
+    public void setFileObject(String fileObject) {
+        this.fileObject = fileObject;
+    }
+
+    @NonNull
     @Override
     public String toString() {
         return "Photo{" +
@@ -90,6 +102,7 @@ public class Photo implements Serializable {
                 ", size='" + size + '\'' +
                 ", lastUpdateTime='" + lastUpdateTime + '\'' +
                 ", lastUpdatedBy='" + lastUpdatedBy + '\'' +
+                ", fileObject='" + fileObject + '\'' +
                 '}';
     }
 }
