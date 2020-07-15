@@ -13,6 +13,7 @@ import android.graphics.PorterDuffColorFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -63,7 +64,7 @@ public class ProfileActivity extends AppCompatActivity {
             BuildConfig.APPLICATION_ID + ".ACTION_USER_UPDATE_BROADCAST";
     private static final int REQUEST_PICK_IMG = 1;
     private static final int REQUEST_EXTERNAL_STORAGE = 2;
-    private static final int IMAGE_QUALITY = 25;
+    public static final int IMAGE_QUALITY = 20;
     private EditText usernameEditText;
     private EditText emailEditText;
     private EditText fullNameEditText;
@@ -171,6 +172,15 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void selectPhoto() {

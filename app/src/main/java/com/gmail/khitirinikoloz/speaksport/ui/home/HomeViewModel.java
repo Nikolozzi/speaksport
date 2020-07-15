@@ -8,16 +8,16 @@ import com.gmail.khitirinikoloz.speaksport.repository.post.PostResponse;
 
 import java.util.List;
 
-final class HomeViewModel extends ViewModel {
+public final class HomeViewModel extends ViewModel {
 
     private PostRepository postRepository;
     private MutableLiveData<List<PostResponse>> postsResponse = new MutableLiveData<>();
 
-    HomeViewModel(PostRepository postRepository) {
+    public HomeViewModel(PostRepository postRepository) {
         this.postRepository = postRepository;
     }
 
-    void getPosts() {
+    public void getPosts() {
         postRepository.getAllPosts(postsResponse);
     }
 

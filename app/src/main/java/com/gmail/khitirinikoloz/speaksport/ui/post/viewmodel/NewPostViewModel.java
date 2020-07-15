@@ -24,7 +24,7 @@ public class NewPostViewModel extends ViewModel {
         return eventResponseLiveData;
     }
 
-    public MutableLiveData<Post> getPostResponseLiveData() {
+    public LiveData<Post> getPostResponseLiveData() {
         return postResponseLiveData;
     }
 }

@@ -14,15 +14,21 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.gmail.khitirinikoloz.speaksport.R;
+import com.gmail.khitirinikoloz.speaksport.model.User;
 import com.gmail.khitirinikoloz.speaksport.repository.post.PostResponse;
 import com.gmail.khitirinikoloz.speaksport.repository.signup.response.UserResponse;
 import com.gmail.khitirinikoloz.speaksport.ui.MainActivity;
 import com.gmail.khitirinikoloz.speaksport.ui.login.SessionManager;
 import com.gmail.khitirinikoloz.speaksport.ui.post.FullScreenPostFragment;
+import com.gmail.khitirinikoloz.speaksport.ui.post.subscription.SubscriptionViewModel;
+import com.gmail.khitirinikoloz.speaksport.ui.post.subscription.SubscriptionViewModelFactory;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -31,10 +37,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import static com.gmail.khitirinikoloz.speaksport.repository.Constants.CREATED;
+import static com.gmail.khitirinikoloz.speaksport.repository.Constants.SUCCESS;
+
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
+    private static final String LOG_TAG = PostAdapter.class.getSimpleName();
     private List<PostResponse> posts;
     private final Context context;
     private final SessionManager sessionManager;
+    private final SubscriptionViewModel subscriptionViewModel;
+    private final User currentUser;
     public static final String USERNAME_KEY = "username";
     public static final String TITLE_KEY = "title";
     public static final String DESCRIPTION_KEY = "description";
@@ -48,6 +60,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         posts = new ArrayList<>();
         this.context = context;
         sessionManager = new SessionManager(context);
+        currentUser = new User(sessionManager.getLoggedInUser());
+        subscriptionViewModel = new ViewModelProvider((ViewModelStoreOwner) context,
+                new SubscriptionViewModelFactory())
+                .get(SubscriptionViewModel.class);
     }
 
     @NonNull
@@ -85,8 +101,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                     dateFormat.format(postResponse.getEndTime());
             holder.dateView.setText(formattedDateTime);
             holder.locationView.setText(postResponse.getLocation());
-            holder.eventSubscribersView.setText(String.valueOf(postResponse.getSubscribersNumber()));
             holder.commentView.setText(String.valueOf(postResponse.getCommentsNumber()));
+            this.manageUserSubscriptions(holder, postResponse);
 
             holder.eventLayout.setVisibility(View.VISIBLE);
             holder.goingLayout.setVisibility(View.VISIBLE);
@@ -96,7 +112,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         }
 
         holder.moreButton.setOnClickListener(this::showPostMenu);
-        holder.goingLayout.setOnClickListener(v -> increaseEventSubscribers(holder));
+        holder.goingLayout.setOnClickListener(v -> updateEventSubscribers(holder, postResponse));
     }
 
     private void setPostTime(final PostViewHolder holder, final Date postedAt) {
@@ -122,29 +138,61 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             if (fileAsString != null) {
                 byte[] fileAsBytes = android.util.Base64.decode(fileAsString, Base64.DEFAULT);
                 Glide.with(context).load(fileAsBytes).into(holder.avatarImg);
-            } else
-                Glide.with(context).load(R.drawable.avatar).into(holder.avatarImg);
+            }
+        } else
+            Glide.with(context).load(R.drawable.avatar).into(holder.avatarImg);
+    }
+
+    private void manageUserSubscriptions(final PostViewHolder holder, final PostResponse postResponse) {
+        if (currentUser != null) {
+            final long subscribers = postResponse.getSubscribedUsers().size();
+            holder.eventSubscribersView.setText(String.valueOf(subscribers));
+
+            if (isUserSubscribedToEvent(postResponse))
+                holder.goingImg.setColorFilter(ContextCompat.getColor(context, R.color.subscribed_img_tint));
         }
     }
 
-    private void increaseEventSubscribers(@NonNull PostViewHolder holder) {
-        //add the current user to the event, change the goingImg tint to green and increment the subscriber number.
-        //If the api response returns the user is already subscribed, unsubscribe, change the
-        // image tint back to default black and decrement the number.
-
-        if (!holder.isSubscribed) {
-            holder.goingImg.setColorFilter(ContextCompat.getColor(context, R.color.subscribed_img_tint));
-            int currentSubscribers = Integer.parseInt(holder.eventSubscribersView.getText().toString());
-            holder.eventSubscribersView.setText(String.valueOf(currentSubscribers + 1));
-
-            holder.isSubscribed = true;
-        } else {
-            holder.goingImg.clearColorFilter();
-            int currentSubscribers = Integer.parseInt(holder.eventSubscribersView.getText().toString());
-            holder.eventSubscribersView.setText(String.valueOf(currentSubscribers - 1));
-
-            holder.isSubscribed = false;
+    private boolean isUserSubscribedToEvent(final PostResponse postResponse) {
+        for (UserResponse userResponse : postResponse.getSubscribedUsers()) {
+            if (userResponse.getId().equals(currentUser.getId()))
+                return true;
         }
+        return false;
+    }
+
+    private void updateEventSubscribers(@NonNull PostViewHolder holder, final PostResponse postResponse) {
+        if (currentUser != null) {
+            if (isUserSubscribedToEvent(postResponse)) {
+                holder.goingImg.clearColorFilter();
+                holder.eventSubscribersView.setText(String.valueOf(postResponse.getSubscribedUsers().size() - 1));
+                subscriptionViewModel.unSubscribeUser(currentUser, postResponse.getId());
+                this.observeUnSubscriptionResponse(postResponse);
+            } else {
+                holder.goingImg.setColorFilter(ContextCompat.getColor(context, R.color.subscribed_img_tint));
+                holder.eventSubscribersView.setText(String.valueOf(postResponse.getSubscribedUsers().size() + 1));
+                subscriptionViewModel.subscribeUser(currentUser, postResponse.getId());
+                this.observeSubscriptionResponse(postResponse);
+            }
+        }
+    }
+
+    private void observeSubscriptionResponse(final PostResponse postResponse) {
+        subscriptionViewModel.getSubscriptionResponseData().observe((LifecycleOwner) context, code -> {
+            if (code != null && code == CREATED) {
+                //add current user to the subscribed user set locally
+                postResponse.getSubscribedUsers().add(new UserResponse(currentUser));
+            }
+        });
+    }
+
+    private void observeUnSubscriptionResponse(final PostResponse postResponse) {
+        subscriptionViewModel.getUnSubscriptionResponseData().observe((LifecycleOwner) context, code -> {
+            if (code != null && code == SUCCESS) {
+                //remove current user from the subscribed users
+                postResponse.getSubscribedUsers().remove(new UserResponse(currentUser));
+            }
+        });
     }
 
     @Override
@@ -183,7 +231,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         private final RelativeLayout goingLayout;
         private final ImageButton moreButton;
 
-        private boolean isSubscribed;
         private String description;
         private final Context context;
 

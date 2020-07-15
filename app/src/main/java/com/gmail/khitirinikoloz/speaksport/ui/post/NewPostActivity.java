@@ -1,6 +1,7 @@
 package com.gmail.khitirinikoloz.speaksport.ui.post;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -26,7 +27,9 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.gmail.khitirinikoloz.speaksport.R;
+import com.gmail.khitirinikoloz.speaksport.ui.login.SessionManager;
 import com.gmail.khitirinikoloz.speaksport.ui.post.adapter.SportsAdapter;
+import com.gmail.khitirinikoloz.speaksport.ui.profile.util.ImageUtil;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.android.material.textfield.TextInputEditText;
@@ -44,13 +47,15 @@ public class NewPostActivity extends AppCompatActivity {
     private static List<String> sportsNames;
     private View popUpWindowView;
     private PopupWindow popupWindow;
+    private Toolbar toolbar;
+    private SessionManager sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_post);
 
-        final Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
@@ -59,6 +64,7 @@ public class NewPostActivity extends AppCompatActivity {
         ((TextView) getSupportActionBar().getCustomView().findViewById(R.id.action_bar_title))
                 .setText(R.string.new_post_title);
 
+        sessionManager = new SessionManager(this);
         detector = new GestureDetectorCompat(this, new MyGestureListener());
         viewPager = findViewById(R.id.post_pager);
         final FragmentStateAdapter pagerAdapter = new NewPostPagerAdapter(this);
@@ -77,6 +83,20 @@ public class NewPostActivity extends AppCompatActivity {
         }).attach();
 
         this.preparePopupWindow();
+    }
+
+    @Override
+    protected void onResume() {
+        if (sessionManager != null) {
+            final String imagePath = sessionManager.getLoggedInUser().getImagePath();
+            if (imagePath != null) {
+                final Bitmap bitmap = ImageUtil.loadImageFromStorage(imagePath);
+                ImageView toolbarImg = toolbar.findViewById(R.id.toolbar_img);
+                if (toolbarImg != null)
+                    toolbarImg.setImageBitmap(bitmap);
+            }
+        }
+        super.onResume();
     }
 
     @Override

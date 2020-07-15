@@ -6,6 +6,7 @@ import com.gmail.khitirinikoloz.speaksport.repository.signup.response.UserRespon
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 
 public class PostResponse implements Serializable {
     private long id;
@@ -19,7 +20,7 @@ public class PostResponse implements Serializable {
     private UserResponse user;
     private Date postedAt;
     private long commentsNumber;
-    private long subscribersNumber;
+    private Set<UserResponse> subscribedUsers;
 
 
     public long getId() {
@@ -110,12 +111,12 @@ public class PostResponse implements Serializable {
         this.commentsNumber = commentsNumber;
     }
 
-    public long getSubscribersNumber() {
-        return subscribersNumber;
+    public Set<UserResponse> getSubscribedUsers() {
+        return subscribedUsers;
     }
 
-    public void setSubscribersNumber(long subscribersNumber) {
-        this.subscribersNumber = subscribersNumber;
+    public void setSubscribedUsers(Set<UserResponse> subscribedUsers) {
+        this.subscribedUsers = subscribedUsers;
     }
 
     @NonNull
@@ -133,7 +134,7 @@ public class PostResponse implements Serializable {
                 ", user=" + user +
                 ", postedAt=" + postedAt +
                 ", commentsNumber=" + commentsNumber +
-                ", subscribersNumber=" + subscribersNumber +
+                ", subscribedUsers=" + subscribedUsers +
                 '}';
     }
 }

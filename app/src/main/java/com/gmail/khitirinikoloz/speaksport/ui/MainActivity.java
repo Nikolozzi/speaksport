@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,6 +20,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -29,17 +29,16 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.gmail.khitirinikoloz.speaksport.R;
 import com.gmail.khitirinikoloz.speaksport.model.User;
-import com.gmail.khitirinikoloz.speaksport.ui.post.NewPostActivity;
+import com.gmail.khitirinikoloz.speaksport.ui.home.HomeViewModel;
+import com.gmail.khitirinikoloz.speaksport.ui.home.HomeViewModelFactory;
 import com.gmail.khitirinikoloz.speaksport.ui.login.LoggedInUser;
 import com.gmail.khitirinikoloz.speaksport.ui.login.LoginActivity;
 import com.gmail.khitirinikoloz.speaksport.ui.login.SessionManager;
+import com.gmail.khitirinikoloz.speaksport.ui.post.NewPostActivity;
 import com.gmail.khitirinikoloz.speaksport.ui.profile.ProfileActivity;
+import com.gmail.khitirinikoloz.speaksport.ui.profile.util.ImageUtil;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 
 import static com.gmail.khitirinikoloz.speaksport.ui.profile.ProfileActivity.ACTION_USER_UPDATE_BROADCAST;
 
@@ -54,6 +53,7 @@ public class MainActivity extends AppCompatActivity
     private FragmentManager fragmentManager;
     private UpdatedUserReceiver updatedUserReceiver;
     private Toolbar toolbar;
+    private HomeViewModel homeViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +83,10 @@ public class MainActivity extends AppCompatActivity
 
         navigationView = findViewById(R.id.side_nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        homeViewModel = new ViewModelProvider(this, new HomeViewModelFactory())
+                .get(HomeViewModel.class);
+        homeViewModel.getPosts();
 
         //open different navigation drawers depending on whether the user is logged in or not
         sessionManager = new SessionManager(this);
@@ -176,7 +180,14 @@ public class MainActivity extends AppCompatActivity
         if (sessionManager != null) {
             final String imagePath = sessionManager.getLoggedInUser().getImagePath();
             if (imagePath != null) {
-                this.loadImageFromStorage(imagePath);
+                final Bitmap bitmap = ImageUtil.loadImageFromStorage(imagePath);
+
+                ImageView navImg = navigationView.getHeaderView(0).findViewById(R.id.img_nav);
+                ImageView toolbarImg = toolbar.findViewById(R.id.toolbar_img);
+                if (navImg != null && toolbarImg != null) {
+                    navImg.setImageBitmap(bitmap);
+                    toolbarImg.setImageBitmap(bitmap);
+                }
             }
         }
         super.onResume();
@@ -201,22 +212,6 @@ public class MainActivity extends AppCompatActivity
         navigationView.inflateMenu(R.menu.side_nav_user_menu);
         navigationView.removeHeaderView(navigationView.getHeaderView(0));
         navigationView.inflateHeaderView(R.layout.nav_header_user_main);
-    }
-
-    private void loadImageFromStorage(final String path) {
-        final File file = new File(path, "profile.jpg");
-        try {
-            final Bitmap bitmap = BitmapFactory.decodeStream(new FileInputStream(file));
-            ImageView navImg = navigationView.getHeaderView(0).findViewById(R.id.img_nav);
-            ImageView toolbarImg = toolbar.findViewById(R.id.toolbar_img);
-            if (navImg != null && toolbarImg != null) {
-                navImg.setImageBitmap(bitmap);
-                toolbarImg.setImageBitmap(bitmap);
-            }
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
     }
 
     private class UpdatedUserReceiver extends BroadcastReceiver {

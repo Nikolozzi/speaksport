@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -12,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.gmail.khitirinikoloz.speaksport.R;
 import com.gmail.khitirinikoloz.speaksport.ui.MainActivity;
@@ -22,6 +24,8 @@ public class HomeFragment extends Fragment {
     private PostAdapter postAdapter;
     private HomeViewModel homeViewModel;
     private MainActivity mainActivity;
+    private ProgressBar progressBar;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -36,6 +40,9 @@ public class HomeFragment extends Fragment {
         mainActivity = (MainActivity) requireActivity();
         homeViewModel = new ViewModelProvider(mainActivity, new HomeViewModelFactory())
                 .get(HomeViewModel.class);
+        progressBar = view.findViewById(R.id.progress_load_posts);
+        progressBar.setVisibility(View.VISIBLE);
+        swipeRefreshLayout = view.findViewById(R.id.refresh_posts);
 
         final RecyclerView recyclerView = view.findViewById(R.id.posts_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(mainActivity));
@@ -49,7 +56,8 @@ public class HomeFragment extends Fragment {
                 .getCustomView().findViewById(R.id.action_bar_title);
         actionBarText.setText(R.string.title_home);
 
-        homeViewModel.getPosts();
+        swipeRefreshLayout.setOnRefreshListener(() -> homeViewModel.getPosts());
+
         this.observePosts();
     }
 
@@ -57,6 +65,8 @@ public class HomeFragment extends Fragment {
         homeViewModel.getPostsResponse().observe(getViewLifecycleOwner(), postResponses -> {
             if (postResponses != null) {
                 postAdapter.setPosts(postResponses);
+                progressBar.setVisibility(View.GONE);
+                swipeRefreshLayout.setRefreshing(false);
             }
         });
     }
