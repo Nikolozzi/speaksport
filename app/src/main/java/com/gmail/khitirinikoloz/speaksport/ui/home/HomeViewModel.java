@@ -17,8 +17,8 @@ public final class HomeViewModel extends ViewModel {
         this.postRepository = postRepository;
     }
 
-    public void getPosts() {
-        postRepository.getAllPosts(postsResponse);
+    public void getPosts(final int page) {
+        postRepository.getAllPosts(page, postsResponse);
     }
 
     MutableLiveData<List<PostResponse>> getPostsResponse() {

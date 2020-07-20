@@ -26,6 +26,7 @@ import com.gmail.khitirinikoloz.speaksport.ui.login.SessionManager;
 import com.gmail.khitirinikoloz.speaksport.ui.post.viewmodel.NewPostViewModel;
 import com.gmail.khitirinikoloz.speaksport.ui.post.viewmodel.NewPostViewModelFactory;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.Autocomplete;
@@ -62,6 +63,8 @@ public class EventPostFragment extends Fragment {
 
     private final Calendar startDateTime = Calendar.getInstance();
     private final Calendar endDateTime = Calendar.getInstance();
+    private double latitude;
+    private double longitude;
 
     private NewPostActivity newPostActivity;
     private NewPostViewModel newPostViewModel;
@@ -112,7 +115,8 @@ public class EventPostFragment extends Fragment {
         startTimeEditText.setOnClickListener(v -> selectEventDateTimeStart());
         endTimeEditText.setOnClickListener(v -> selectEventDateTimeEnd());
         locationEditText.setOnClickListener(v -> {
-            List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS);
+            List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME,
+                    Place.Field.ADDRESS, Place.Field.LAT_LNG);
             //start the autocomplete intent
             Intent intent = new Autocomplete.IntentBuilder(
                     AutocompleteActivityMode.OVERLAY, fields
@@ -146,6 +150,11 @@ public class EventPostFragment extends Fragment {
         if (requestCode == AUTOCOMPLETE_REQUEST_CODE && data != null) {
             if (resultCode == RESULT_OK) {
                 final Place place = Autocomplete.getPlaceFromIntent(data);
+                final LatLng latLng = place.getLatLng();
+                if (latLng != null) {
+                    latitude = latLng.latitude;
+                    longitude = latLng.longitude;
+                }
                 String address = place.getName() + "\n" + place.getAddress();
                 locationEditText.setText(address);
                 locationEditText.setError(null);
@@ -181,6 +190,8 @@ public class EventPostFragment extends Fragment {
                 .startTime(startDateTime.getTime())
                 .endTime(endDateTime.getTime())
                 .location(location)
+                .latitude(latitude)
+                .longitude(longitude)
                 .build();
 
         newPostViewModel.addPost(newPost);

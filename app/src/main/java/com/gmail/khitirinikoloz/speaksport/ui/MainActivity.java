@@ -20,7 +20,6 @@ import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -29,21 +28,22 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.gmail.khitirinikoloz.speaksport.R;
 import com.gmail.khitirinikoloz.speaksport.model.User;
-import com.gmail.khitirinikoloz.speaksport.ui.home.HomeViewModel;
-import com.gmail.khitirinikoloz.speaksport.ui.home.HomeViewModelFactory;
 import com.gmail.khitirinikoloz.speaksport.ui.login.LoggedInUser;
 import com.gmail.khitirinikoloz.speaksport.ui.login.LoginActivity;
 import com.gmail.khitirinikoloz.speaksport.ui.login.SessionManager;
+import com.gmail.khitirinikoloz.speaksport.ui.post.FullScreenPostFragment;
 import com.gmail.khitirinikoloz.speaksport.ui.post.NewPostActivity;
 import com.gmail.khitirinikoloz.speaksport.ui.profile.ProfileActivity;
 import com.gmail.khitirinikoloz.speaksport.ui.profile.util.ImageUtil;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
+import static com.gmail.khitirinikoloz.speaksport.ui.post.FullScreenPostFragment.FRAGMENT_TAG;
 import static com.gmail.khitirinikoloz.speaksport.ui.profile.ProfileActivity.ACTION_USER_UPDATE_BROADCAST;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, FragmentManager.OnBackStackChangedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, FragmentManager.OnBackStackChangedListener,
+        CommentFragment.OnPublishCommentCallBack {
 
     private static final int PROFILE_REQUEST_CODE = 1;
     private SessionManager sessionManager;
@@ -53,7 +53,6 @@ public class MainActivity extends AppCompatActivity
     private FragmentManager fragmentManager;
     private UpdatedUserReceiver updatedUserReceiver;
     private Toolbar toolbar;
-    private HomeViewModel homeViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,10 +82,6 @@ public class MainActivity extends AppCompatActivity
 
         navigationView = findViewById(R.id.side_nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-        homeViewModel = new ViewModelProvider(this, new HomeViewModelFactory())
-                .get(HomeViewModel.class);
-        homeViewModel.getPosts();
 
         //open different navigation drawers depending on whether the user is logged in or not
         sessionManager = new SessionManager(this);
@@ -214,6 +209,15 @@ public class MainActivity extends AppCompatActivity
         navigationView.inflateHeaderView(R.layout.nav_header_user_main);
     }
 
+    @Override
+    public void onPublishComment(final String comment) {
+        OnDispatchCommentCallBack dispatchCommentCallBack =
+                (FullScreenPostFragment) getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG);
+
+        if (dispatchCommentCallBack != null)
+            dispatchCommentCallBack.onDispatchComment(comment);
+    }
+
     private class UpdatedUserReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -232,5 +236,9 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         }
+    }
+
+    public interface OnDispatchCommentCallBack {
+        void onDispatchComment(final String comment);
     }
 }

@@ -11,27 +11,37 @@ import java.util.Objects;
 public class Post implements Serializable {
     @SerializedName("event")
     private final boolean isEvent;
+    private final long id;
     private final String title;
     private final String description;
     private final Date startTime;
     private final Date endTime;
     private final String location;
+    private final Double latitude;
+    private final Double longitude;
     private final String topic;
     private final User user;
 
     private Post(final PostBuilder postBuilder) {
         this.isEvent = postBuilder.isEvent;
+        this.id = postBuilder.id;
         this.title = postBuilder.title;
         this.description = postBuilder.description;
         this.startTime = postBuilder.startTime;
         this.endTime = postBuilder.endTime;
         this.location = postBuilder.location;
+        this.latitude = postBuilder.latitude;
+        this.longitude = postBuilder.longitude;
         this.topic = postBuilder.topic;
         this.user = postBuilder.user;
     }
 
     public boolean isEvent() {
         return isEvent;
+    }
+
+    public long getId() {
+        return id;
     }
 
     public String getTitle() {
@@ -54,6 +64,14 @@ public class Post implements Serializable {
         return location;
     }
 
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
     public String getTopic() {
         return topic;
     }
@@ -67,11 +85,14 @@ public class Post implements Serializable {
     public String toString() {
         return "Post{" +
                 "isEvent=" + isEvent +
+                ", id=" + id +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", startTime=" + startTime +
                 ", endTime=" + endTime +
                 ", location='" + location + '\'' +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
                 ", topic='" + topic + '\'' +
                 ", user=" + user +
                 '}';
@@ -79,11 +100,14 @@ public class Post implements Serializable {
 
     public static class PostBuilder {
         private boolean isEvent;
+        private long id;
         private String title;
         private String description;
         private Date startTime;
         private Date endTime;
         private String location;
+        private Double latitude;
+        private Double longitude;
         private String topic;
         private User user;
 
@@ -93,6 +117,11 @@ public class Post implements Serializable {
             this.title = Objects.requireNonNull(title);
             this.topic = Objects.requireNonNull(topic);
             this.user = Objects.requireNonNull(user);
+        }
+
+        public PostBuilder id(final long id) {
+            this.id = id;
+            return this;
         }
 
         public PostBuilder description(final String description) {
@@ -115,6 +144,16 @@ public class Post implements Serializable {
             return this;
         }
 
+        public PostBuilder latitude(final double latitude) {
+            this.latitude = latitude;
+            return this;
+        }
+
+        public PostBuilder longitude(final double longitude) {
+            this.longitude = longitude;
+            return this;
+        }
+
         public Post build() {
             final Post post = new Post(this);
             this.validatePost(post);
@@ -122,10 +161,12 @@ public class Post implements Serializable {
         }
 
         private void validatePost(final Post post) {
-            if (post.isEvent && (post.startTime == null || post.endTime == null || post.location == null))
+            if (post.isEvent && (post.startTime == null || post.endTime == null || post.location == null
+                    || post.latitude == null || post.longitude == null))
                 throw new IllegalArgumentException("Event fields are not set");
 
-            if (!post.isEvent && (post.startTime != null || post.endTime != null || post.location != null))
+            if (!post.isEvent && (post.startTime != null || post.endTime != null || post.location != null
+                    || post.latitude != null && post.longitude != null))
                 throw new IllegalArgumentException("Regular post fields are not correctly  set");
         }
     }

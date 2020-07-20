@@ -2,7 +2,6 @@ package com.gmail.khitirinikoloz.speaksport.ui.post.adapter;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,16 +28,15 @@ import com.gmail.khitirinikoloz.speaksport.ui.login.SessionManager;
 import com.gmail.khitirinikoloz.speaksport.ui.post.FullScreenPostFragment;
 import com.gmail.khitirinikoloz.speaksport.ui.post.subscription.SubscriptionViewModel;
 import com.gmail.khitirinikoloz.speaksport.ui.post.subscription.SubscriptionViewModelFactory;
+import com.gmail.khitirinikoloz.speaksport.ui.post.util.PostHelper;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import static com.gmail.khitirinikoloz.speaksport.repository.Constants.CREATED;
 import static com.gmail.khitirinikoloz.speaksport.repository.Constants.SUCCESS;
+import static com.gmail.khitirinikoloz.speaksport.ui.post.FullScreenPostFragment.FRAGMENT_TAG;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
     private static final String LOG_TAG = PostAdapter.class.getSimpleName();
@@ -47,14 +45,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     private final SessionManager sessionManager;
     private final SubscriptionViewModel subscriptionViewModel;
     private final User currentUser;
-    public static final String USERNAME_KEY = "username";
-    public static final String TITLE_KEY = "title";
-    public static final String DESCRIPTION_KEY = "description";
-    public static final String DATE_KEY = "date";
-    public static final String LOCATION_KEY = "location";
-    public static final String TOPIC_KEY = "topic";
-    public static final String COMMENTS_KEY = "comments";
-    public static final String SUBSCRIBERS_KEY = "subscribers";
 
     public PostAdapter(Context context) {
         posts = new ArrayList<>();
@@ -82,13 +72,15 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         //for all posts, including regular ones
         holder.authorView.setText(userResponse.getUsername());
         holder.titleView.setText(postResponse.getTitle());
-        holder.description = postResponse.getDescription();
         holder.topicView.setText(postResponse.getTopic());
+        holder.commentView.setText(String.valueOf(postResponse.getCommentsNumber()));
+        holder.postId = postResponse.getId();
 
         //set post publication time
-        this.setPostTime(holder, postResponse.getPostedAt());
+        //this.setPostTime(holder, postResponse.getPostedAt());
+        holder.publicationTime.setText(PostHelper.getPublicationTime(postResponse.getPostedAt()));
         //load icons with glide for better memory efficiency
-        this.loadUserImage(holder, userResponse);
+        PostHelper.loadUserImage(context, holder.avatarImg, userResponse);
 
         Glide.with(context).load(R.drawable.topic).into(holder.topicImg);
 
@@ -101,7 +93,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                     dateFormat.format(postResponse.getEndTime());
             holder.dateView.setText(formattedDateTime);
             holder.locationView.setText(postResponse.getLocation());
-            holder.commentView.setText(String.valueOf(postResponse.getCommentsNumber()));
             this.manageUserSubscriptions(holder, postResponse);
 
             holder.eventLayout.setVisibility(View.VISIBLE);
@@ -113,34 +104,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
         holder.moreButton.setOnClickListener(this::showPostMenu);
         holder.goingLayout.setOnClickListener(v -> updateEventSubscribers(holder, postResponse));
-    }
-
-    private void setPostTime(final PostViewHolder holder, final Date postedAt) {
-        final long diff = Calendar.getInstance().getTime().getTime() -
-                postedAt.getTime();
-        long minutes = TimeUnit.MILLISECONDS.toMinutes(diff);
-        String timeText = minutes + "m ago";
-        if (minutes >= 60) {
-            long hours = TimeUnit.MINUTES.toHours(minutes);
-            timeText = hours + "h ago";
-            if (hours >= 24) {
-                long days = TimeUnit.HOURS.toDays(hours);
-                timeText = days + "d ago";
-            }
-        }
-
-        holder.publicationTime.setText(timeText);
-    }
-
-    private void loadUserImage(final PostViewHolder holder, final UserResponse userResponse) {
-        if (userResponse.getPhoto() != null) {
-            final String fileAsString = userResponse.getPhoto().getFileObject();
-            if (fileAsString != null) {
-                byte[] fileAsBytes = android.util.Base64.decode(fileAsString, Base64.DEFAULT);
-                Glide.with(context).load(fileAsBytes).into(holder.avatarImg);
-            }
-        } else
-            Glide.with(context).load(R.drawable.avatar).into(holder.avatarImg);
     }
 
     private void manageUserSubscriptions(final PostViewHolder holder, final PostResponse postResponse) {
@@ -196,12 +159,23 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     }
 
     @Override
+    public long getItemId(int position) {
+        return posts.get(position).getId();
+    }
+
+    @Override
     public int getItemCount() {
         return posts.size();
     }
 
     public void setPosts(List<PostResponse> posts) {
-        this.posts = posts;
+        this.posts.addAll(posts);
+        int startPosition = this.posts.size() - posts.size();
+        notifyItemRangeInserted(startPosition, posts.size());
+    }
+
+    public void clearData() {
+        posts.clear();
         notifyDataSetChanged();
     }
 
@@ -231,7 +205,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         private final RelativeLayout goingLayout;
         private final ImageButton moreButton;
 
-        private String description;
+        private long postId;
         private final Context context;
 
         PostViewHolder(@NonNull View itemView, @NonNull Context context) {
@@ -261,25 +235,15 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
         @Override
         public void onClick(View v) {
-            //make a call to the api to fetch this post's fields before opening the fullscreen view
-            //temporary implementation
             Bundle bundle = new Bundle();
-            bundle.putString(USERNAME_KEY, authorView.getText().toString());
-            bundle.putString(TITLE_KEY, titleView.getText().toString());
-            bundle.putString(DESCRIPTION_KEY, description);
-            bundle.putString(DATE_KEY, dateView.getText().toString());
-            bundle.putString(LOCATION_KEY, locationView.getText().toString());
-            bundle.putString(TOPIC_KEY, topicView.getText().toString());
-            bundle.putString(COMMENTS_KEY, commentView.getText().toString());
-            bundle.putString(SUBSCRIBERS_KEY, eventSubscribersView.getText().toString());
-
+            bundle.putLong("postId", postId);
             FullScreenPostFragment fullScreenPostFragment = new FullScreenPostFragment();
             fullScreenPostFragment.setArguments(bundle);
             MainActivity activity = (MainActivity) context;
             activity.getSupportFragmentManager().beginTransaction()
                     .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right,
                             R.anim.enter_from_right, R.anim.exit_to_right)
-                    .add(R.id.home_container, fullScreenPostFragment, null)
+                    .add(R.id.home_container, fullScreenPostFragment, FRAGMENT_TAG)
                     .addToBackStack(null)
                     .commit();
         }

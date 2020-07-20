@@ -62,8 +62,8 @@ public class PostRepository {
         });
     }
 
-    public void getAllPosts(@NonNull MutableLiveData<List<PostResponse>> postsLiveData) {
-        Call<List<PostResponse>> call = postApi.getAllPosts();
+    public void getAllPosts(final int page, @NonNull MutableLiveData<List<PostResponse>> postsLiveData) {
+        Call<List<PostResponse>> call = postApi.getAllPosts(page);
         call.enqueue(new Callback<List<PostResponse>>() {
             @Override
             public void onResponse(@NonNull Call<List<PostResponse>> call, @NonNull Response<List<PostResponse>> response) {
@@ -75,6 +75,24 @@ public class PostRepository {
             @Override
             public void onFailure(@NonNull Call<List<PostResponse>> call, @NonNull Throwable t) {
                 postsLiveData.postValue(null);
+                Log.d(LOG_TAG, t.toString());
+            }
+        });
+    }
+
+    public void getPost(final long postId, @NonNull final MutableLiveData<PostResponse> postResponseLiveData) {
+        Call<PostResponse> call = postApi.getPost(postId);
+        call.enqueue(new Callback<PostResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<PostResponse> call, @NonNull Response<PostResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    postResponseLiveData.postValue(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<PostResponse> call, @NonNull Throwable t) {
+                postResponseLiveData.postValue(null);
                 Log.d(LOG_TAG, t.toString());
             }
         });

@@ -9,11 +9,16 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface PostApi {
     @POST("/posts/")
     Call<Post> addPost(@Body final Post post);
 
     @GET("/posts/")
-    Call<List<PostResponse>> getAllPosts();
+    Call<List<PostResponse>> getAllPosts(@Query("page") int page);
+
+    @GET("/posts/{id}")
+    Call<PostResponse> getPost(@Path("id") final long id);
 }

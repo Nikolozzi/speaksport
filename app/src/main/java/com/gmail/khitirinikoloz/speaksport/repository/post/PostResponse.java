@@ -15,6 +15,8 @@ public class PostResponse implements Serializable {
     private String description;
     private Date startTime;
     private Date endTime;
+    private Double latitude;
+    private Double longitude;
     private String location;
     private String topic;
     private UserResponse user;
@@ -79,6 +81,22 @@ public class PostResponse implements Serializable {
         this.location = location;
     }
 
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
+
     public String getTopic() {
         return topic;
     }
@@ -129,6 +147,8 @@ public class PostResponse implements Serializable {
                 ", description='" + description + '\'' +
                 ", startTime=" + startTime +
                 ", endTime=" + endTime +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
                 ", location='" + location + '\'' +
                 ", topic='" + topic + '\'' +
                 ", user=" + user +

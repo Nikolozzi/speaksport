@@ -52,12 +52,12 @@ public class SampleDataGenerator {
         );
     }
 
-    public static List<Comment> getSampleComments() {
-        List<Comment> comments = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
-            comments.add(new Comment(USERNAME, COMMENT));
-        }
-
-        return comments;
-    }
+//    public static List<Comment> getSampleComments() {
+//        List<Comment> comments = new ArrayList<>();
+//        for (int i = 0; i < 3; i++) {
+//            comments.add(new Comment(USERNAME, COMMENT));
+//        }
+//
+//        return comments;
+//    }
 }
