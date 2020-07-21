@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="150dp"
-    android:background="@color/nav_header_color"
+    android:background="@color/colorPrimaryLight"
     android:padding="16dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 

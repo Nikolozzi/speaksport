@@ -2,11 +2,18 @@ package com.gmail.khitirinikoloz.speaksport.ui.post.util;
 
 import android.content.Context;
 import android.util.Base64;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
+
+import androidx.annotation.ColorInt;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
 import com.bumptech.glide.Glide;
 import com.gmail.khitirinikoloz.speaksport.R;
 import com.gmail.khitirinikoloz.speaksport.repository.signup.response.UserResponse;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -32,7 +39,7 @@ public class PostHelper {
     }
 
     public static void loadUserImage(final Context context, final ImageView avatarImg,
-                                      final UserResponse userResponse) {
+                                     final UserResponse userResponse) {
         if (userResponse.getPhoto() != null) {
             final String fileAsString = userResponse.getPhoto().getFileObject();
             if (fileAsString != null) {
@@ -41,5 +48,19 @@ public class PostHelper {
             }
         } else
             Glide.with(context).load(R.drawable.avatar).into(avatarImg);
+    }
+
+    public static void showSnackBarSuccess(final View rootView, final int layoutId,
+                                           final String message, @ColorInt int color) {
+        final CoordinatorLayout coordinatorLayout = rootView.findViewById(layoutId);
+        coordinatorLayout.setVisibility(View.VISIBLE);
+        coordinatorLayout.bringToFront();
+        final Snackbar snackbar = Snackbar.make(coordinatorLayout, message, BaseTransientBottomBar.LENGTH_LONG);
+        snackbar.setBackgroundTint(color);
+        final Snackbar.SnackbarLayout snackBarLayout = (Snackbar.SnackbarLayout) snackbar.getView();
+        snackBarLayout.setRotation(180);
+        final TextView snackbarText = snackBarLayout.findViewById(com.google.android.material.R.id.snackbar_text);
+        snackbarText.setTextSize(18);
+        snackbar.show();
     }
 }

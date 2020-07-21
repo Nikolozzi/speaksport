@@ -1,8 +1,7 @@
 package com.gmail.khitirinikoloz.speaksport.ui.home;
 
-import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,17 +18,21 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.gmail.khitirinikoloz.speaksport.R;
 import com.gmail.khitirinikoloz.speaksport.ui.MainActivity;
+import com.gmail.khitirinikoloz.speaksport.ui.post.NewPostActivity;
 import com.gmail.khitirinikoloz.speaksport.ui.post.adapter.PostAdapter;
 import com.gmail.khitirinikoloz.speaksport.ui.post.util.EndlessRecyclerViewScrollListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class HomeFragment extends Fragment {
     private static final String LOG_TAG = HomeFragment.class.getSimpleName();
+    public static final String NAME = LOG_TAG;
     private PostAdapter postAdapter;
     private HomeViewModel homeViewModel;
     private MainActivity mainActivity;
     private ProgressBar progressBarMain;
     private ProgressBar progressBar;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private FloatingActionButton floatingActionButton;
     private EndlessRecyclerViewScrollListener scrollListener;
     private int defaultPageNum = 0;
 
@@ -50,13 +53,16 @@ public class HomeFragment extends Fragment {
         progressBarMain = view.findViewById(R.id.progress_load_posts_main);
         progressBar = view.findViewById(R.id.progress_load_posts);
         progressBarMain.setVisibility(View.VISIBLE);
+        floatingActionButton = mainActivity.findViewById(R.id.add_fab);
         swipeRefreshLayout = view.findViewById(R.id.refresh_posts);
+
+        floatingActionButton.setOnClickListener(v -> openNewPostActivity());
 
         final RecyclerView recyclerView = view.findViewById(R.id.posts_list);
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        postAdapter = new PostAdapter(getContext());
+        postAdapter = new PostAdapter(getContext(), HomeFragment.class);
         postAdapter.setHasStableIds(true);
         recyclerView.setAdapter(postAdapter);
 
@@ -84,7 +90,12 @@ public class HomeFragment extends Fragment {
         actionBarText.setText(R.string.title_home);
     }
 
-    private void getPosts(int page){
+    private void openNewPostActivity() {
+        final Intent intent = new Intent(mainActivity, NewPostActivity.class);
+        startActivity(intent);
+    }
+
+    private void getPosts(int page) {
         progressBar.setVisibility(View.VISIBLE);
         homeViewModel.getPosts(page);
     }

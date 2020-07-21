@@ -25,11 +25,6 @@ public class NotificationsFragment extends Fragment {
         final TextView textView = root.findViewById(R.id.text_notifications);
         notificationsViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
 
-        @SuppressWarnings("ConstantConditions")
-        final TextView actionBarText = ((MainActivity) requireActivity()).getSupportActionBar()
-                .getCustomView().findViewById(R.id.action_bar_title);
-        actionBarText.setText(R.string.title_notifications);
-
         return root;
     }
 }

@@ -8,14 +8,13 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import androidx.annotation.ColorInt;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -26,10 +25,9 @@ import com.gmail.khitirinikoloz.speaksport.R;
 import com.gmail.khitirinikoloz.speaksport.model.User;
 import com.gmail.khitirinikoloz.speaksport.repository.login.request.LoginRequest;
 import com.gmail.khitirinikoloz.speaksport.ui.MainActivity;
+import com.gmail.khitirinikoloz.speaksport.ui.post.util.PostHelper;
 import com.gmail.khitirinikoloz.speaksport.ui.profile.util.ImageUtil;
 import com.gmail.khitirinikoloz.speaksport.ui.signup.SignUpFragment;
-import com.google.android.material.snackbar.BaseTransientBottomBar;
-import com.google.android.material.snackbar.Snackbar;
 
 import static com.gmail.khitirinikoloz.speaksport.repository.Constants.UNAUTHORIZED;
 
@@ -42,6 +40,7 @@ public class LoginActivity extends AppCompatActivity implements SignUpFragment.O
     private SessionManager sessionManager;
     private EditText usernameEditText;
     private EditText passwordEditText;
+    private ViewGroup viewGroup;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -60,6 +59,9 @@ public class LoginActivity extends AppCompatActivity implements SignUpFragment.O
         final TextView signUpBtn = findViewById(R.id.sign_up);
         final ProgressBar progressBar = findViewById(R.id.progress_log_in);
 
+        viewGroup = (ViewGroup) ((ViewGroup) this
+                .findViewById(android.R.id.content)).getChildAt(0);
+
         loginViewModel.getLoginFormState().observe(this, loginFormState -> {
             if (loginFormState == null) {
                 return;
@@ -72,13 +74,13 @@ public class LoginActivity extends AppCompatActivity implements SignUpFragment.O
                 if (progressBar.getVisibility() == View.VISIBLE)
                     progressBar.setVisibility(View.GONE);
                 if (loginResponse.isFailedRequest()) {
-                    showSnackBar(FAILED_REQUEST_MESSAGE,
-                            ContextCompat.getColor(this, R.color.color_failure));
+                    PostHelper.showSnackBarSuccess(viewGroup, R.id.snackbar_signup_success,
+                            FAILED_REQUEST_MESSAGE, ContextCompat.getColor(this, R.color.color_failure));
                     return;
                 }
                 if (loginResponse.getResponseCode() == UNAUTHORIZED) {
-                    showSnackBar(FAILED_AUTHORIZATION_MESSAGE,
-                            ContextCompat.getColor(this, R.color.color_failure));
+                    PostHelper.showSnackBarSuccess(viewGroup, R.id.snackbar_signup_success,
+                            FAILED_AUTHORIZATION_MESSAGE, ContextCompat.getColor(this, R.color.color_failure));
                     return;
                 }
                 //guaranteed successful login
@@ -86,6 +88,7 @@ public class LoginActivity extends AppCompatActivity implements SignUpFragment.O
                     final String fileAsString = loginResponse.getFileObject();
                     String imagePath = null;
                     if (fileAsString != null) {
+                        // TODO: move this into separate task
                         byte[] fileAsBytes = Base64.decode(fileAsString, Base64.DEFAULT);
                         final Bitmap bitmap = BitmapFactory.decodeByteArray(fileAsBytes, 0, fileAsBytes.length);
                         imagePath = ImageUtil.savePhotoToStorage(this, bitmap);
@@ -146,19 +149,8 @@ public class LoginActivity extends AppCompatActivity implements SignUpFragment.O
     @Override
     public void onSignUp(User user) {
         final String message = String.format("Welcome %s, please Log in", user.getUsername());
-        showSnackBar(message, ContextCompat.getColor(this, R.color.color_success));
-    }
 
-    private void showSnackBar(final String message, @ColorInt int color) {
-        final CoordinatorLayout coordinatorLayout = findViewById(R.id.snackbar_signup_success);
-        coordinatorLayout.setVisibility(View.VISIBLE);
-        coordinatorLayout.bringToFront();
-        final Snackbar snackbar = Snackbar.make(coordinatorLayout, message, BaseTransientBottomBar.LENGTH_LONG);
-        snackbar.setBackgroundTint(color);
-        final Snackbar.SnackbarLayout snackBarLayout = (Snackbar.SnackbarLayout) snackbar.getView();
-        snackBarLayout.setRotation(180);
-        final TextView snackbarText = snackBarLayout.findViewById(com.google.android.material.R.id.snackbar_text);
-        snackbarText.setTextSize(18);
-        snackbar.show();
+        PostHelper.showSnackBarSuccess(viewGroup, R.id.snackbar_signup_success,
+                message, ContextCompat.getColor(this, R.color.color_success));
     }
 }

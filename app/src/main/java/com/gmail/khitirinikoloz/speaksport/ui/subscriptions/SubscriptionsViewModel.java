@@ -1,18 +1,22 @@
-package com.gmail.khitirinikoloz.speaksport.ui.post.subscription;
+package com.gmail.khitirinikoloz.speaksport.ui.subscriptions;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.gmail.khitirinikoloz.speaksport.model.User;
-import com.gmail.khitirinikoloz.speaksport.repository.post.subscription.SubscriptionRepository;
+import com.gmail.khitirinikoloz.speaksport.repository.post.PostResponse;
+import com.gmail.khitirinikoloz.speaksport.repository.subscription.SubscriptionRepository;
 
-public class SubscriptionViewModel extends ViewModel {
+import java.util.List;
+
+public class SubscriptionsViewModel extends ViewModel {
     private final SubscriptionRepository subscriptionRepository;
     private final MutableLiveData<Integer> subscriptionResponseData = new MutableLiveData<>();
     private final MutableLiveData<Integer> unSubscriptionResponseData = new MutableLiveData<>();
+    private final MutableLiveData<List<PostResponse>> subscribedPostsResponseData = new MutableLiveData<>();
 
-    public SubscriptionViewModel(SubscriptionRepository subscriptionRepository) {
+    public SubscriptionsViewModel(SubscriptionRepository subscriptionRepository) {
         this.subscriptionRepository = subscriptionRepository;
     }
 
@@ -24,11 +28,19 @@ public class SubscriptionViewModel extends ViewModel {
         subscriptionRepository.unSubscribeUser(user, postId, unSubscriptionResponseData);
     }
 
+    public void getSubscribedPosts(final long userId, final int page) {
+        subscriptionRepository.getSubscribedPosts(userId, page, subscribedPostsResponseData);
+    }
+
     public LiveData<Integer> getSubscriptionResponseData() {
         return subscriptionResponseData;
     }
 
     public LiveData<Integer> getUnSubscriptionResponseData() {
         return unSubscriptionResponseData;
+    }
+
+    public LiveData<List<PostResponse>> getSubscribedPostsResponseData() {
+        return subscribedPostsResponseData;
     }
 }

@@ -1,4 +1,4 @@
-package com.gmail.khitirinikoloz.speaksport.repository.post.subscription;
+package com.gmail.khitirinikoloz.speaksport.repository.subscription;
 
 import android.util.Log;
 
@@ -8,6 +8,9 @@ import androidx.lifecycle.MutableLiveData;
 import com.gmail.khitirinikoloz.speaksport.api.SubscriptionApi;
 import com.gmail.khitirinikoloz.speaksport.model.User;
 import com.gmail.khitirinikoloz.speaksport.repository.Constants;
+import com.gmail.khitirinikoloz.speaksport.repository.post.PostResponse;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -65,6 +68,25 @@ public class SubscriptionRepository {
             @Override
             public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
                 subscriptionResponse.postValue(null);
+                Log.d(LOG_TAG, t.toString());
+            }
+        });
+    }
+
+    public void getSubscribedPosts(final long userId, final int page,
+                                   @NonNull final MutableLiveData<List<PostResponse>> subscribedPostsLiveData) {
+        Call<List<PostResponse>> call = subscriptionApi.getSubscribedPosts(userId, page);
+        call.enqueue(new Callback<List<PostResponse>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<PostResponse>> call, @NonNull Response<List<PostResponse>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    subscribedPostsLiveData.postValue(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<PostResponse>> call, @NonNull Throwable t) {
+                subscribedPostsLiveData.postValue(null);
                 Log.d(LOG_TAG, t.toString());
             }
         });

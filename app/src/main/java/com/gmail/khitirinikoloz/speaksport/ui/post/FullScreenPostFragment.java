@@ -8,8 +8,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -53,6 +51,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.text.DateFormat;
 import java.util.Set;
@@ -189,6 +188,8 @@ public class FullScreenPostFragment extends Fragment implements MainActivity.OnD
 
         BottomNavigationView navigationView = requireActivity().findViewById(R.id.nav_view);
         navigationView.setVisibility(View.GONE);
+        FloatingActionButton floatingActionButton = requireActivity().findViewById(R.id.add_fab);
+        floatingActionButton.setVisibility(View.GONE);
 
         final LinearLayout commentContainer = view.findViewById(R.id.add_comment_container);
         if (!sessionManager.isUserLoggedIn())
@@ -324,12 +325,6 @@ public class FullScreenPostFragment extends Fragment implements MainActivity.OnD
     }
 
     @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.post_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
     public void onDispatchComment(final String comment) {
         final Post post;
         if (currentPostResponse.isEvent()) {
@@ -378,7 +373,7 @@ public class FullScreenPostFragment extends Fragment implements MainActivity.OnD
 
         if (currentPostResponse != null) {
             final LatLng latLng = new LatLng(currentPostResponse.getLatitude(), currentPostResponse.getLongitude());
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(latLng.latitude, latLng.longitude), 5);
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(latLng.latitude, latLng.longitude), 8);
             googleMap.addMarker(new MarkerOptions()
                     .position(new LatLng(latLng.latitude, latLng.longitude))
                     .title("Marker"));

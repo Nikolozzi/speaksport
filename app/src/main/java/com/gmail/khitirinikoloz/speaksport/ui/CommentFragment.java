@@ -38,7 +38,7 @@ public class CommentFragment extends Fragment {
         setHasOptionsMenu(true);
         mainActivity = (MainActivity) requireActivity();
         commentEditText = view.findViewById(R.id.comment_edittext);
-        publishCommentCallBack = (OnPublishCommentCallBack) mainActivity;
+        publishCommentCallBack = mainActivity;
 
         //noinspection ConstantConditions
         mainActivity.getSupportActionBar().hide();
