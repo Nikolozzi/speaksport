@@ -7,6 +7,7 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
@@ -21,4 +22,13 @@ public interface PostApi {
 
     @GET("/posts/{id}")
     Call<PostResponse> getPost(@Path("id") final long id);
+
+    @GET("/posts/event/user/{userId}")
+    Call<List<PostResponse>> getUserEvents(@Path("userId") final long userId, @Query("page") int page);
+
+    @GET("/posts/regular/user/{userId}")
+    Call<List<PostResponse>> getUserRegularPosts(@Path("userId") final long userId, @Query("page") int page);
+
+    @DELETE("/posts/{id}")
+    Call<Void> deletePost(@Path("id") final long id);
 }

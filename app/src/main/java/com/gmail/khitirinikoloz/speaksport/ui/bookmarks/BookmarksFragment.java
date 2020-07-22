@@ -117,7 +117,7 @@ public class BookmarksFragment extends Fragment {
     private void observeDeletedBookmark() {
         bookmarksViewModel.getDeletedBookmarkResponse().observe(getViewLifecycleOwner(), responseCode -> {
             if (responseCode == SUCCESS) {
-                postAdapter.deleteBookmarkedPost(bookmarksViewModel.getDeletedBookmarkId());
+                postAdapter.deletePost(bookmarksViewModel.getDeletedPostId());
                 Toast.makeText(requireContext(), "Successfully removed", Toast.LENGTH_SHORT).show();
             }
         });

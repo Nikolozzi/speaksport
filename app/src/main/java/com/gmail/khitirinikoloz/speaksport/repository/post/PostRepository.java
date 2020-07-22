@@ -87,12 +87,67 @@ public class PostRepository {
             public void onResponse(@NonNull Call<PostResponse> call, @NonNull Response<PostResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     postResponseLiveData.postValue(response.body());
-                }
+                } else
+                    postResponseLiveData.postValue(null);
             }
 
             @Override
             public void onFailure(@NonNull Call<PostResponse> call, @NonNull Throwable t) {
                 postResponseLiveData.postValue(null);
+                Log.d(LOG_TAG, t.toString());
+            }
+        });
+    }
+
+    public void getEvents(final long userId, final int page,
+                          final @NonNull MutableLiveData<List<PostResponse>> eventsResponse) {
+        Call<List<PostResponse>> call = postApi.getUserEvents(userId, page);
+        call.enqueue(new Callback<List<PostResponse>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<PostResponse>> call, @NonNull Response<List<PostResponse>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    eventsResponse.postValue(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<PostResponse>> call, @NonNull Throwable t) {
+                eventsResponse.postValue(null);
+                Log.d(LOG_TAG, t.toString());
+            }
+        });
+    }
+
+    public void getRegularPosts(final long userId, final int page,
+                                final @NonNull MutableLiveData<List<PostResponse>> regularPostsResponse) {
+        Call<List<PostResponse>> call = postApi.getUserRegularPosts(userId, page);
+        call.enqueue(new Callback<List<PostResponse>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<PostResponse>> call, @NonNull Response<List<PostResponse>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    regularPostsResponse.postValue(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<PostResponse>> call, @NonNull Throwable t) {
+                regularPostsResponse.postValue(null);
+                Log.d(LOG_TAG, t.toString());
+            }
+        });
+    }
+
+    public void deletePost(final long id, final @NonNull MutableLiveData<Integer> deletePostResponse) {
+        Call<Void> call = postApi.deletePost(id);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
+                deletePostResponse.postValue(response.code());
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
+                deletePostResponse.postValue(null);
                 Log.d(LOG_TAG, t.toString());
             }
         });

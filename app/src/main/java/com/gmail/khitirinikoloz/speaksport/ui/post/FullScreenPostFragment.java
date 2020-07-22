@@ -92,6 +92,7 @@ public class FullScreenPostFragment extends Fragment implements MainActivity.OnD
 
     private ProgressBar progressBarMain;
     private ProgressBar progressBar;
+    private TextView noPostView;
 
     private MapView mapView;
 
@@ -127,6 +128,7 @@ public class FullScreenPostFragment extends Fragment implements MainActivity.OnD
         progressBarMain = view.findViewById(R.id.progress_load_post);
         progressBar = view.findViewById(R.id.progress_load_comments);
         progressBarMain.setVisibility(View.VISIBLE);
+        noPostView = view.findViewById(R.id.no_post);
 
         eventContainer.setVisibility(View.GONE);
         locationContainer.setVisibility(View.GONE);
@@ -247,8 +249,10 @@ public class FullScreenPostFragment extends Fragment implements MainActivity.OnD
                 }
 
                 hiderView.setVisibility(View.GONE);
-                progressBarMain.setVisibility(View.GONE);
+            } else {
+                noPostView.setVisibility(View.VISIBLE);
             }
+            progressBarMain.setVisibility(View.GONE);
         });
     }
 

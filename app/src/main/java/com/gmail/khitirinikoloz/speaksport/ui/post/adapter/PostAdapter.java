@@ -13,6 +13,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelStoreOwner;
@@ -29,12 +31,19 @@ import com.gmail.khitirinikoloz.speaksport.ui.bookmarks.BookmarksFragment;
 import com.gmail.khitirinikoloz.speaksport.ui.bookmarks.BookmarksViewModel;
 import com.gmail.khitirinikoloz.speaksport.ui.home.HomeFragment;
 import com.gmail.khitirinikoloz.speaksport.ui.login.SessionManager;
+import com.gmail.khitirinikoloz.speaksport.ui.post.EventPostActivity;
 import com.gmail.khitirinikoloz.speaksport.ui.post.FullScreenPostFragment;
+import com.gmail.khitirinikoloz.speaksport.ui.post.RegularPostActivity;
 import com.gmail.khitirinikoloz.speaksport.ui.post.util.PostHelper;
+import com.gmail.khitirinikoloz.speaksport.ui.post.viewmodel.EventPostViewModel;
+import com.gmail.khitirinikoloz.speaksport.ui.post.viewmodel.EventPostViewModelFactory;
+import com.gmail.khitirinikoloz.speaksport.ui.post.viewmodel.RegularPostViewModel;
+import com.gmail.khitirinikoloz.speaksport.ui.post.viewmodel.RegularPostViewModelFactory;
 import com.gmail.khitirinikoloz.speaksport.ui.subscriptions.SubscriptionsFragment;
 import com.gmail.khitirinikoloz.speaksport.ui.subscriptions.SubscriptionsViewModel;
 import com.gmail.khitirinikoloz.speaksport.ui.subscriptions.SubscriptionsViewModelFactory;
 
+import java.lang.ref.WeakReference;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,8 +59,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     private final SessionManager sessionManager;
     private final SubscriptionsViewModel subscriptionsViewModel;
     private BookmarksViewModel bookmarksViewModel;
+    private EventPostViewModel eventPostViewModel;
+    private RegularPostViewModel regularPostViewModel;
     private final User currentUser;
     private final Class caller;
+    private static WeakReference<MainActivity> mainActivity;
 
     public PostAdapter(Context context, Class caller) {
         this.caller = caller;
@@ -62,10 +74,16 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         subscriptionsViewModel = new ViewModelProvider((ViewModelStoreOwner) context,
                 new SubscriptionsViewModelFactory())
                 .get(SubscriptionsViewModel.class);
-        if (!caller.getSimpleName().equals(SubscriptionsFragment.NAME))
+        if (!caller.getSimpleName().equals(SubscriptionsFragment.NAME)) {
             bookmarksViewModel = new ViewModelProvider((ViewModelStoreOwner) context,
                     new BookmarkViewModelFactory())
                     .get(BookmarksViewModel.class);
+        }
+
+        if (!caller.getSimpleName().equals(EventPostActivity.NAME) &&
+                !caller.getSimpleName().equals(RegularPostActivity.NAME)) {
+            mainActivity = new WeakReference<>((MainActivity) context);
+        }
     }
 
     @NonNull
@@ -117,10 +135,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         if (caller.getSimpleName().equals(SubscriptionsFragment.NAME))
             holder.moreButton.setVisibility(View.GONE);
 
-        if (caller.getSimpleName().equals(BookmarksFragment.NAME)) {
-            holder.moreButton.setOnClickListener(v -> showBookmarksMenu(holder.moreButton, postResponse));
-        } else if (caller.getSimpleName().equals(HomeFragment.NAME))
+        if (caller.getSimpleName().equals(HomeFragment.NAME))
             holder.moreButton.setOnClickListener(v -> showMainPostMenu(holder.moreButton, postResponse));
+        else
+            holder.moreButton.setOnClickListener(v -> showPostMenu(holder.moreButton, postResponse));
 
         holder.goingLayout.setOnClickListener(v -> updateEventSubscribers(holder, postResponse));
     }
@@ -184,6 +202,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     }
 
     @Override
+    public int getItemViewType(int position) {
+        return (int) posts.get(position).getId();
+    }
+
+    @Override
     public int getItemCount() {
         return posts.size();
     }
@@ -201,7 +224,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
     private void showMainPostMenu(View view, PostResponse postResponse) {
         final PopupMenu postMenu = new PopupMenu(view.getContext(), view);
-        postMenu.getMenuInflater().inflate(R.menu.post_menu, postMenu.getMenu());
+        postMenu.getMenuInflater().inflate(R.menu.main_post_menu, postMenu.getMenu());
 
         postMenu.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
@@ -222,23 +245,44 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         postMenu.show();
     }
 
-    private void showBookmarksMenu(View view, PostResponse postResponse) {
+    private void showPostMenu(View view, PostResponse postResponse) {
         final PopupMenu postMenu = new PopupMenu(view.getContext(), view);
-        postMenu.getMenuInflater().inflate(R.menu.bookmarks_menu, postMenu.getMenu());
+        postMenu.getMenuInflater().inflate(R.menu.post_menu, postMenu.getMenu());
 
         postMenu.setOnMenuItemClickListener(item -> {
-            if (item.getItemId() == R.id.remove_bookmark) {
-                bookmarksViewModel.deleteBookmark(currentUser, postResponse.getId());
-                bookmarksViewModel.setDeletedBookmarkId(postResponse.getId());
-                return true;
+            if (caller.getSimpleName().equals(BookmarksFragment.NAME)) {
+                if (item.getItemId() == R.id.remove_post) {
+                    bookmarksViewModel.deleteBookmark(currentUser, postResponse.getId());
+                    bookmarksViewModel.setDeletedPostId(postResponse.getId());
+                    return true;
+                }
+                return false;
+            } else if (caller.getSimpleName().equals(EventPostActivity.NAME)) {
+                eventPostViewModel = new ViewModelProvider((ViewModelStoreOwner) context,
+                        new EventPostViewModelFactory()).get(EventPostViewModel.class);
+                if (item.getItemId() == R.id.remove_post) {
+                    eventPostViewModel.deleteEvent(postResponse.getId());
+                    eventPostViewModel.setDeletedEventId(postResponse.getId());
+                    return true;
+                }
+                return false;
+            } else if (caller.getSimpleName().equals(RegularPostActivity.NAME)) {
+                regularPostViewModel = new ViewModelProvider((ViewModelStoreOwner) context,
+                        new RegularPostViewModelFactory()).get(RegularPostViewModel.class);
+                if (item.getItemId() == R.id.remove_post) {
+                    regularPostViewModel.deletePost(postResponse.getId());
+                    regularPostViewModel.setDeletedPostId(postResponse.getId());
+                    return true;
+                }
             }
+
             return false;
         });
 
         postMenu.show();
     }
 
-    public void deleteBookmarkedPost(final long postId) {
+    public void deletePost(final long postId) {
         for (int i = 0; i < posts.size(); i++) {
             if (posts.get(i).getId() == postId) {
                 posts.remove(i);
@@ -304,24 +348,30 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             bundle.putLong("postId", postId);
             FullScreenPostFragment fullScreenPostFragment = new FullScreenPostFragment();
             fullScreenPostFragment.setArguments(bundle);
-            MainActivity activity = (MainActivity) context;
             if (caller.getSimpleName().equals(SubscriptionsFragment.NAME)) {
-                loadFullScreenPostFragment(activity, fullScreenPostFragment, R.id.subscriptions_container);
+                loadFullScreenPostFragment(fullScreenPostFragment, R.id.subscriptions_container);
             } else if (caller.getSimpleName().equals(BookmarksFragment.NAME)) {
-                loadFullScreenPostFragment(activity, fullScreenPostFragment, R.id.bookmarks_container);
-            } else if (caller.getSimpleName().equals(HomeFragment.NAME)) {
-                loadFullScreenPostFragment(activity, fullScreenPostFragment, R.id.home_container);
+                loadFullScreenPostFragment(fullScreenPostFragment, R.id.bookmarks_container);
+            } else {
+                loadFullScreenPostFragment(fullScreenPostFragment, R.id.home_container);
             }
         }
 
-        private void loadFullScreenPostFragment(MainActivity activity,
-                                                FullScreenPostFragment fullScreenPostFragment, int layout) {
-            activity.getSupportFragmentManager().beginTransaction()
+        private void loadFullScreenPostFragment(FullScreenPostFragment fullScreenPostFragment, int layout) {
+            if (caller.getSimpleName().equals(EventPostActivity.NAME)) {
+                ((DrawerLayout) mainActivity.get().findViewById(R.id.drawer_layout)).closeDrawer(GravityCompat.START);
+                ((EventPostActivity) (context)).finish();
+            } else if (caller.getSimpleName().equals(RegularPostActivity.NAME)) {
+                ((DrawerLayout) mainActivity.get().findViewById(R.id.drawer_layout)).closeDrawer(GravityCompat.START);
+                ((RegularPostActivity) (context)).finish();
+            }
+
+            mainActivity.get().getSupportFragmentManager().beginTransaction()
                     .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right,
                             R.anim.enter_from_right, R.anim.exit_to_right)
                     .add(layout, fullScreenPostFragment, FRAGMENT_TAG)
                     .addToBackStack(null)
-                    .commit();
+                    .commitAllowingStateLoss();
         }
     }
 }

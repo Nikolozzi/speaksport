@@ -237,5 +237,10 @@
     <string name="no_subscriptions">You have not made any subscriptions yet</string>
     <string name="no_bookmarks">You have not bookmarked anything yet</string>
     <string name="remove">Remove</string>
+    <string name="no_events">No events</string>
+    <string name="events_title">My Events</string>
+    <string name="no_posts">No posts</string>
+    <string name="title_post">My Posts</string>
+    <string name="no_post">Could not find post</string>
 
 </resources>

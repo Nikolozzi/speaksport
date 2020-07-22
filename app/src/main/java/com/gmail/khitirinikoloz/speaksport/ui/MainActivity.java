@@ -35,7 +35,9 @@ import com.gmail.khitirinikoloz.speaksport.ui.login.LoggedInUser;
 import com.gmail.khitirinikoloz.speaksport.ui.login.LoginActivity;
 import com.gmail.khitirinikoloz.speaksport.ui.login.SessionManager;
 import com.gmail.khitirinikoloz.speaksport.ui.notifications.NotificationsFragment;
+import com.gmail.khitirinikoloz.speaksport.ui.post.EventPostActivity;
 import com.gmail.khitirinikoloz.speaksport.ui.post.FullScreenPostFragment;
+import com.gmail.khitirinikoloz.speaksport.ui.post.RegularPostActivity;
 import com.gmail.khitirinikoloz.speaksport.ui.post.util.PostHelper;
 import com.gmail.khitirinikoloz.speaksport.ui.profile.ProfileActivity;
 import com.gmail.khitirinikoloz.speaksport.ui.profile.util.ImageUtil;
@@ -211,6 +213,16 @@ public class MainActivity extends AppCompatActivity
                         R.drawable.ic_not_signed_user));
                 finish();
                 startActivity(getIntent());
+                break;
+            }
+            case R.id.user_events: {
+                Intent eventsIntent = new Intent(this, EventPostActivity.class);
+                startActivity(eventsIntent);
+                break;
+            }
+            case R.id.user_posts: {
+                Intent regPostsIntent = new Intent(this, RegularPostActivity.class);
+                startActivity(regPostsIntent);
                 break;
             }
             case R.id.settings_nav:

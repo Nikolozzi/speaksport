@@ -15,7 +15,7 @@ public class BookmarksViewModel extends ViewModel {
     private MutableLiveData<Integer> bookmarkResponse = new MutableLiveData<>();
     private MutableLiveData<List<PostResponse>> bookmarksResponse = new MutableLiveData<>();
     private MutableLiveData<Integer> deletedBookmarkResponse = new MutableLiveData<>();
-    private long deletedBookmarkId;
+    private long deletedPostId;
 
     public BookmarksViewModel(BookmarkRepository bookmarkRepository) {
         this.bookmarkRepository = bookmarkRepository;
@@ -45,11 +45,11 @@ public class BookmarksViewModel extends ViewModel {
         return deletedBookmarkResponse;
     }
 
-    public void setDeletedBookmarkId(final long id) {
-        deletedBookmarkId = id;
+    public long getDeletedPostId() {
+        return deletedPostId;
     }
 
-    long getDeletedBookmarkId() {
-        return deletedBookmarkId;
+    public void setDeletedPostId(long deletedPostId) {
+        this.deletedPostId = deletedPostId;
     }
 }

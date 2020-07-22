@@ -2,18 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/bookmark"
+        android:id="@+id/remove_post"
         android:orderInCategory="100"
-        android:title="@string/bookmark" />
-
-    <item
-        android:id="@+id/report"
-        android:orderInCategory="101"
-        android:title="@string/report" />
-
-    <item
-        android:id="@+id/share"
-        android:orderInCategory="102"
-        android:title="@string/share" />
+        android:title="@string/remove" />
 
 </menu>
