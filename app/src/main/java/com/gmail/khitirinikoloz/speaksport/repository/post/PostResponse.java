@@ -157,4 +157,22 @@ public class PostResponse implements Serializable {
                 ", subscribedUsers=" + subscribedUsers +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        PostResponse that = (PostResponse) o;
+        return id == that.id &&
+                event == that.event &&
+                title.equals(that.title) &&
+                topic.equals(that.topic);
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) (17 * id + title.hashCode() + topic.hashCode());
+    }
 }

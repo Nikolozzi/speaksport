@@ -6,10 +6,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -34,7 +34,6 @@ import com.gmail.khitirinikoloz.speaksport.ui.home.HomeFragment;
 import com.gmail.khitirinikoloz.speaksport.ui.login.LoggedInUser;
 import com.gmail.khitirinikoloz.speaksport.ui.login.LoginActivity;
 import com.gmail.khitirinikoloz.speaksport.ui.login.SessionManager;
-import com.gmail.khitirinikoloz.speaksport.ui.notifications.NotificationsFragment;
 import com.gmail.khitirinikoloz.speaksport.ui.post.EventPostActivity;
 import com.gmail.khitirinikoloz.speaksport.ui.post.FullScreenPostFragment;
 import com.gmail.khitirinikoloz.speaksport.ui.post.RegularPostActivity;
@@ -59,7 +58,6 @@ public class MainActivity extends AppCompatActivity
     private HomeFragment homeFragment = new HomeFragment();
     private SubscriptionsFragment subscriptionsFragment = new SubscriptionsFragment();
     private BookmarksFragment bookmarksFragment = new BookmarksFragment();
-    private NotificationsFragment notificationsFragment = new NotificationsFragment();
     private Fragment activeFragment = homeFragment;
 
     private SessionManager sessionManager;
@@ -79,13 +77,12 @@ public class MainActivity extends AppCompatActivity
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.actionbar_title);
         actionBarText = getSupportActionBar().getCustomView().findViewById(R.id.action_bar_title);
 
-        fragmentManager.beginTransaction().add(R.id.fragment_container, notificationsFragment,
-                "notifications").hide(notificationsFragment).commit();
         fragmentManager.beginTransaction().add(R.id.fragment_container, bookmarksFragment,
                 "bookmarks").hide(bookmarksFragment).commit();
         fragmentManager.beginTransaction().add(R.id.fragment_container, subscriptionsFragment,
@@ -158,11 +155,6 @@ public class MainActivity extends AppCompatActivity
                 activeFragment = bookmarksFragment;
                 actionBarText.setText(R.string.title_bookmarks);
                 return true;
-            case R.id.navigation_notifications:
-                fragmentManager.beginTransaction().hide(activeFragment).show(notificationsFragment).commit();
-                activeFragment = notificationsFragment;
-                actionBarText.setText(R.string.title_notifications);
-                return true;
         }
         return false;
     }
@@ -183,13 +175,6 @@ public class MainActivity extends AppCompatActivity
             if (floatingActionButton.getVisibility() == View.GONE && sessionManager.isUserLoggedIn())
                 floatingActionButton.setVisibility(View.VISIBLE);
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.top_menu, menu);
-
-        return true;
     }
 
     @Override

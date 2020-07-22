@@ -3,7 +3,6 @@
     <string name="title_home">Home</string>
     <string name="title_subscriptions">Subscriptions</string>
     <string name="title_bookmarks">Bookmarks</string>
-    <string name="title_notifications">Notifications</string>
     <string name="avatar_description">user avatar picture</string>
     <string name="username_default">Johnny</string>
     <string name="default_time">1h ago</string>

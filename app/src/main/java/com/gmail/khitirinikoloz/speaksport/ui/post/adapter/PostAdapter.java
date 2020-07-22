@@ -1,10 +1,13 @@
 package com.gmail.khitirinikoloz.speaksport.ui.post.adapter;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
@@ -12,6 +15,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -47,14 +51,16 @@ import java.lang.ref.WeakReference;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.gmail.khitirinikoloz.speaksport.repository.Constants.CREATED;
 import static com.gmail.khitirinikoloz.speaksport.repository.Constants.SUCCESS;
 import static com.gmail.khitirinikoloz.speaksport.ui.post.FullScreenPostFragment.FRAGMENT_TAG;
 
-public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
+public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> implements Filterable {
     private static final String LOG_TAG = PostAdapter.class.getSimpleName();
     private List<PostResponse> posts;
+    private List<PostResponse> postsForSearch;
     private final Context context;
     private final SessionManager sessionManager;
     private final SubscriptionsViewModel subscriptionsViewModel;
@@ -68,6 +74,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     public PostAdapter(Context context, Class caller) {
         this.caller = caller;
         posts = new ArrayList<>();
+        postsForSearch = new ArrayList<>();
         this.context = context;
         sessionManager = new SessionManager(context);
         currentUser = new User(sessionManager.getLoggedInUser());
@@ -213,12 +220,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
     public void setPosts(List<PostResponse> posts) {
         this.posts.addAll(posts);
+        this.postsForSearch.addAll(posts);
         int startPosition = this.posts.size() - posts.size();
         notifyItemRangeInserted(startPosition, posts.size());
     }
 
     public void clearData() {
         posts.clear();
+        postsForSearch.clear();
         notifyDataSetChanged();
     }
 
@@ -291,6 +300,47 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             }
         }
     }
+
+    @Override
+    public Filter getFilter() {
+        return postsFilter;
+    }
+
+    private Filter postsFilter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+
+            List<PostResponse> filteredList = new ArrayList<>();
+            if (constraint == null || constraint.length() == 0) {
+                filteredList.addAll(postsForSearch);
+            } else {
+                String filterPattern = constraint.toString().toLowerCase().trim();
+                for (PostResponse postResponse : postsForSearch) {
+                    if (postResponse.getTopic().toLowerCase().contains(filterPattern)) {
+                        filteredList.add(postResponse);
+                    }
+                }
+            }
+
+            FilterResults results = new FilterResults();
+            results.values = filteredList;
+
+            return results;
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.N)
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            posts.clear();
+
+            @SuppressWarnings("unchecked")
+            List<PostResponse> filtered = (List<PostResponse>) results.values;
+            List<PostResponse> finalResults = filtered.stream().distinct().collect(Collectors.toList());
+            posts.addAll(new ArrayList<>(finalResults));
+
+            notifyDataSetChanged();
+        }
+    };
 
     static class PostViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private final ImageView eventImg;

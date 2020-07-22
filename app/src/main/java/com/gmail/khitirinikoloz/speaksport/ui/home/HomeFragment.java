@@ -3,6 +3,9 @@ package com.gmail.khitirinikoloz.speaksport.ui.home;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
@@ -10,6 +13,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -34,6 +38,7 @@ public class HomeFragment extends Fragment {
     private SwipeRefreshLayout swipeRefreshLayout;
     private FloatingActionButton floatingActionButton;
     private EndlessRecyclerViewScrollListener scrollListener;
+    private RecyclerView recyclerView;
     private int defaultPageNum = 0;
 
     @Override
@@ -58,7 +63,7 @@ public class HomeFragment extends Fragment {
 
         floatingActionButton.setOnClickListener(v -> openNewPostActivity());
 
-        final RecyclerView recyclerView = view.findViewById(R.id.posts_list);
+        recyclerView = view.findViewById(R.id.posts_list);
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
 
@@ -88,6 +93,46 @@ public class HomeFragment extends Fragment {
         final TextView actionBarText = ((MainActivity) requireActivity()).getSupportActionBar()
                 .getCustomView().findViewById(R.id.action_bar_title);
         actionBarText.setText(R.string.title_home);
+
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.top_menu, menu);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+
+        searchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                recyclerView.clearOnScrollListeners();
+                swipeRefreshLayout.setEnabled(false);
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                recyclerView.addOnScrollListener(scrollListener);
+                swipeRefreshLayout.setEnabled(true);
+                return true;
+            }
+        });
+
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                postAdapter.getFilter().filter(newText);
+                return false;
+            }
+        });
+
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     private void openNewPostActivity() {
