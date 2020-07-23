@@ -57,7 +57,7 @@
             android:layout_toEndOf="@id/comment_pic"
             android:layout_toRightOf="@id/comment_pic"
             android:maxLines="2"
-            android:text="@string/comment_num_default" />
+            android:text="" />
 
     </RelativeLayout>
 
@@ -87,7 +87,7 @@
             android:layout_toEndOf="@id/subscriber_pic"
             android:layout_toRightOf="@id/subscriber_pic"
             android:maxLines="2"
-            android:text="@string/subscribers_num_default" />
+            android:text="" />
 
     </RelativeLayout>
 

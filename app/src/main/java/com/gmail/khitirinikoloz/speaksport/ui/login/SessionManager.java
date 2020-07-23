@@ -30,6 +30,7 @@ public final class SessionManager {
         editor.putString(KEY_USERNAME, loginResponse.getUsername());
         editor.putString(KEY_EMAIL, loginResponse.getEmail());
         editor.putString(KEY_TOKEN, loginResponse.getToken());
+        editor.putString(KEY_IMAGE_PATH, loginResponse.getImagePath());
 
         editor.apply();
     }
@@ -46,17 +47,11 @@ public final class SessionManager {
         final String token = preferences.getString(KEY_TOKEN, null);
         final String imagePath = preferences.getString(KEY_IMAGE_PATH, null);
 
-        final LoggedInUser loggedInUser = new LoggedInUser(id, username, email, token);
-        loggedInUser.setImagePath(imagePath);
-        return loggedInUser;
+        return new LoggedInUser(id, username, email, token, imagePath);
     }
 
     public void logOutUser() {
-        editor.remove(IS_LOGIN);
-        editor.remove(KEY_EMAIL);
-        editor.remove(KEY_USERNAME);
-        editor.remove(KEY_ID);
-        editor.remove(KEY_TOKEN);
+        editor.clear();
         editor.apply();
     }
 

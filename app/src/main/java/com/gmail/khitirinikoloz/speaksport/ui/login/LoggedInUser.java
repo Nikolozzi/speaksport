@@ -1,5 +1,7 @@
 package com.gmail.khitirinikoloz.speaksport.ui.login;
 
+import androidx.annotation.NonNull;
+
 public class LoggedInUser {
     private final long userId;
     private String username;
@@ -7,11 +9,12 @@ public class LoggedInUser {
     private final String token;
     private String imagePath;
 
-    public LoggedInUser(long userId, String username, String email, String token) {
+    public LoggedInUser(long userId, String username, String email, String token, String imagePath) {
         this.userId = userId;
         this.username = username;
         this.email = email;
         this.token = token;
+        this.imagePath = imagePath;
     }
 
     public long getUserId() {
@@ -44,5 +47,17 @@ public class LoggedInUser {
 
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "LoggedInUser{" +
+                "userId=" + userId +
+                ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
+                ", token='" + token + '\'' +
+                ", imagePath='" + imagePath + '\'' +
+                '}';
     }
 }

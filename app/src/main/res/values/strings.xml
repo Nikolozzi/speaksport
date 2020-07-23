@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">SpeakSport</string>
     <string name="title_home">Home</string>
+    <string name="title_subscriptions">Subscriptions</string>
     <string name="title_bookmarks">Bookmarks</string>
-    <string name="title_notifications">Notifications</string>
     <string name="avatar_description">user avatar picture</string>
     <string name="username_default">Johnny</string>
     <string name="default_time">1h ago</string>
@@ -17,7 +17,6 @@
     <string name="event_desc">event post picture</string>
     <string name="default_event_date">6/10/20 2:40 PM - 6/11/20 3:55 PM</string>
     <string name="action_search">Search</string>
-    <string name="action_add">Add post</string>
     <string name="bookmark">Bookmark</string>
     <string name="report">Report</string>
     <string name="share">Share</string>
@@ -232,5 +231,15 @@
     <string name="new_password">New password</string>
     <string name="user_profile_image">user profile image</string>
     <string name="camera_label_on_profile_image">camera label on profile image</string>
+    <string name="subscriptions">Subscriptions</string>
+    <string name="add_new_post">add new post</string>
+    <string name="no_subscriptions">You have not made any subscriptions yet</string>
+    <string name="no_bookmarks">You have not bookmarked anything yet</string>
+    <string name="remove">Remove</string>
+    <string name="no_events">No events</string>
+    <string name="events_title">My Events</string>
+    <string name="no_posts">No posts</string>
+    <string name="title_post">My Posts</string>
+    <string name="no_post">Could not find post</string>
 
 </resources>

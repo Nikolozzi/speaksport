@@ -1,4 +1,4 @@
-package com.gmail.khitirinikoloz.speaksport.ui;
+package com.gmail.khitirinikoloz.speaksport.ui.post;
 
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.PopupWindow;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,9 +16,11 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.gmail.khitirinikoloz.speaksport.R;
-import com.gmail.khitirinikoloz.speaksport.model.RegularPost;
 import com.gmail.khitirinikoloz.speaksport.model.Post;
-import com.gmail.khitirinikoloz.speaksport.ui.home.HomeViewModel;
+import com.gmail.khitirinikoloz.speaksport.model.User;
+import com.gmail.khitirinikoloz.speaksport.ui.login.SessionManager;
+import com.gmail.khitirinikoloz.speaksport.ui.post.viewmodel.NewPostViewModel;
+import com.gmail.khitirinikoloz.speaksport.ui.post.viewmodel.NewPostViewModelFactory;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
@@ -26,14 +29,17 @@ import java.util.List;
 
 public class RegularPostFragment extends Fragment {
 
+    private static final String LOG_TAG = RegularPostFragment.class.getSimpleName();
     private TextInputEditText titleEditText;
     private TextInputEditText descriptionEditText;
     private TextInputEditText topicEditText;
     private PopupWindow popUpWindow;
     private View popUpView;
-    private HomeViewModel homeViewModel;
     private NewPostActivity newPostActivity;
     private List<TextInputEditText> requiredFields;
+
+    private NewPostViewModel newPostViewModel;
+    private SessionManager sessionManager;
 
     public RegularPostFragment() {
         // Required empty public constructor
@@ -51,9 +57,9 @@ public class RegularPostFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         newPostActivity = (NewPostActivity) requireActivity();
-
-        //temporary bridge between this fragment and homeFragment to display posts.(is not correct)
-        homeViewModel = new ViewModelProvider(newPostActivity).get(HomeViewModel.class);
+        newPostViewModel = new ViewModelProvider(newPostActivity, new NewPostViewModelFactory())
+                .get(NewPostViewModel.class);
+        sessionManager = new SessionManager(newPostActivity);
 
         titleEditText = view.findViewById(R.id.regular_title_edittext);
         descriptionEditText = view.findViewById(R.id.regular_description_edittext);
@@ -70,6 +76,16 @@ public class RegularPostFragment extends Fragment {
 
         final Button saveButton = view.findViewById(R.id.regular_save_post_button);
         saveButton.setOnClickListener(v -> savePost());
+        this.observeRegularPostResponse();
+    }
+
+    private void observeRegularPostResponse() {
+        newPostViewModel.getPostResponseLiveData().observe(getViewLifecycleOwner(), post -> {
+            if (post != null) {
+                Toast.makeText(newPostActivity, "Post successfully added",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void savePost() {
@@ -79,8 +95,13 @@ public class RegularPostFragment extends Fragment {
         String title = String.valueOf(titleEditText.getText());
         String description = String.valueOf(descriptionEditText.getText());
         String topic = String.valueOf(topicEditText.getText());
-        Post regularPost = new RegularPost(title, description, topic);
-        homeViewModel.setPost(regularPost);
+
+        final User currentUser = new User(sessionManager.getLoggedInUser());
+        Post regularPost = new Post.PostBuilder(false, title, topic, currentUser)
+                .description(description)
+                .build();
+
+        newPostViewModel.addPost(regularPost);
         newPostActivity.finish();
     }
 

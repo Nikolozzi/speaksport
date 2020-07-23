@@ -1,4 +1,4 @@
-package com.gmail.khitirinikoloz.speaksport.ui;
+package com.gmail.khitirinikoloz.speaksport.ui.post;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.PopupWindow;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,10 +20,13 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.gmail.khitirinikoloz.speaksport.R;
-import com.gmail.khitirinikoloz.speaksport.model.EventPost;
 import com.gmail.khitirinikoloz.speaksport.model.Post;
-import com.gmail.khitirinikoloz.speaksport.ui.home.HomeViewModel;
+import com.gmail.khitirinikoloz.speaksport.model.User;
+import com.gmail.khitirinikoloz.speaksport.ui.login.SessionManager;
+import com.gmail.khitirinikoloz.speaksport.ui.post.viewmodel.NewPostViewModel;
+import com.gmail.khitirinikoloz.speaksport.ui.post.viewmodel.NewPostViewModelFactory;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.Autocomplete;
@@ -59,9 +63,12 @@ public class EventPostFragment extends Fragment {
 
     private final Calendar startDateTime = Calendar.getInstance();
     private final Calendar endDateTime = Calendar.getInstance();
+    private double latitude;
+    private double longitude;
 
     private NewPostActivity newPostActivity;
-    private HomeViewModel homeViewModel;
+    private NewPostViewModel newPostViewModel;
+    private SessionManager sessionManager;
 
     public EventPostFragment() {
         // Required empty public constructor
@@ -80,12 +87,12 @@ public class EventPostFragment extends Fragment {
 
         //enclosing activity
         newPostActivity = (NewPostActivity) requireActivity();
+        newPostViewModel = new ViewModelProvider(newPostActivity, new NewPostViewModelFactory())
+                .get(NewPostViewModel.class);
 
+        sessionManager = new SessionManager(newPostActivity);
         Places.initialize(newPostActivity.getApplicationContext(), PLACES_API_KEY);
         Places.createClient(newPostActivity);
-
-        //temporary bridge between this fragment and homeFragment to display posts.(is not correct)
-        homeViewModel = new ViewModelProvider(newPostActivity).get(HomeViewModel.class);
 
         titleEditText = view.findViewById(R.id.title_edittext);
         descriptionEditText = view.findViewById(R.id.description_edittext);
@@ -108,7 +115,8 @@ public class EventPostFragment extends Fragment {
         startTimeEditText.setOnClickListener(v -> selectEventDateTimeStart());
         endTimeEditText.setOnClickListener(v -> selectEventDateTimeEnd());
         locationEditText.setOnClickListener(v -> {
-            List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS);
+            List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME,
+                    Place.Field.ADDRESS, Place.Field.LAT_LNG);
             //start the autocomplete intent
             Intent intent = new Autocomplete.IntentBuilder(
                     AutocompleteActivityMode.OVERLAY, fields
@@ -125,6 +133,8 @@ public class EventPostFragment extends Fragment {
         });
 
         saveButton.setOnClickListener(v -> saveEvent());
+
+        this.observeEventPostResponse();
     }
 
     @Override
@@ -140,6 +150,11 @@ public class EventPostFragment extends Fragment {
         if (requestCode == AUTOCOMPLETE_REQUEST_CODE && data != null) {
             if (resultCode == RESULT_OK) {
                 final Place place = Autocomplete.getPlaceFromIntent(data);
+                final LatLng latLng = place.getLatLng();
+                if (latLng != null) {
+                    latitude = latLng.latitude;
+                    longitude = latLng.longitude;
+                }
                 String address = place.getName() + "\n" + place.getAddress();
                 locationEditText.setText(address);
                 locationEditText.setError(null);
@@ -148,6 +163,15 @@ public class EventPostFragment extends Fragment {
                 Log.e(LOG_TAG, "Fetching a place failed: " + status.getStatusMessage());
             }
         }
+    }
+
+    private void observeEventPostResponse() {
+        newPostViewModel.getEventResponseLiveData().observe(getViewLifecycleOwner(), post -> {
+            if (post != null) {
+                Toast.makeText(newPostActivity, "Event successfully added",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void saveEvent() {
@@ -160,11 +184,17 @@ public class EventPostFragment extends Fragment {
         final String location = String.valueOf(locationEditText.getText());
         final String topic = String.valueOf(topicEditText.getText());
 
-        final Post newPost = new EventPost(title, description, startDateTime, endDateTime,
-                location, topic);
+        final User currentUser = new User(sessionManager.getLoggedInUser());
+        final Post newPost = new Post.PostBuilder(true, title, topic, currentUser)
+                .description(description)
+                .startTime(startDateTime.getTime())
+                .endTime(endDateTime.getTime())
+                .location(location)
+                .latitude(latitude)
+                .longitude(longitude)
+                .build();
 
-        //temporarily
-        homeViewModel.setPost(newPost);
+        newPostViewModel.addPost(newPost);
         newPostActivity.finish();
     }
 

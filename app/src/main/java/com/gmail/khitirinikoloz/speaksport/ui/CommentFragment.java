@@ -20,6 +20,7 @@ public class CommentFragment extends Fragment {
 
     private EditText commentEditText;
     private MainActivity mainActivity;
+    private OnPublishCommentCallBack publishCommentCallBack;
 
     public CommentFragment() {
         // Required empty public constructor
@@ -37,6 +38,7 @@ public class CommentFragment extends Fragment {
         setHasOptionsMenu(true);
         mainActivity = (MainActivity) requireActivity();
         commentEditText = view.findViewById(R.id.comment_edittext);
+        publishCommentCallBack = mainActivity;
 
         //noinspection ConstantConditions
         mainActivity.getSupportActionBar().hide();
@@ -77,6 +79,8 @@ public class CommentFragment extends Fragment {
         if (TextUtils.getTrimmedLength(comment) == 0)
             return;
 
+        publishCommentCallBack.onPublishComment(comment);
+
         //start the background task which writes the comment to the database, then fetch new comments
         //and display them
         //noinspection ConstantConditions
@@ -84,5 +88,9 @@ public class CommentFragment extends Fragment {
                 .getSystemService(Context.INPUT_METHOD_SERVICE))
                 .hideSoftInputFromWindow(getView().getWindowToken(), 0);
         requireActivity().onBackPressed();
+    }
+
+    public interface OnPublishCommentCallBack {
+        void onPublishComment(final String comment);
     }
 }

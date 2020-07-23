@@ -11,13 +11,13 @@
         tools:layout="@layout/fragment_home" />
 
     <fragment
+        android:id="@+id/navigation_subscriptions"
+        android:name="com.gmail.khitirinikoloz.speaksport.ui.subscriptions.SubscriptionsFragment"
+        tools:layout="@layout/fragment_subscriptions" />
+
+    <fragment
         android:id="@+id/navigation_bookmarks"
         android:name="com.gmail.khitirinikoloz.speaksport.ui.bookmarks.BookmarksFragment"
         tools:layout="@layout/fragment_bookmarks" />
-
-    <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="com.gmail.khitirinikoloz.speaksport.ui.notifications.NotificationsFragment"
-        tools:layout="@layout/fragment_notifications" />
 
 </navigation>

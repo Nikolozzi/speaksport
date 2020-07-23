@@ -1,8 +1,8 @@
 package com.gmail.khitirinikoloz.speaksport.ui.home;
 
 import com.gmail.khitirinikoloz.speaksport.model.Comment;
-import com.gmail.khitirinikoloz.speaksport.model.EventPost;
 import com.gmail.khitirinikoloz.speaksport.model.Post;
+import com.gmail.khitirinikoloz.speaksport.model.User;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,21 +29,35 @@ public class SampleDataGenerator {
 
     static List<Post> getSamplePosts() {
         return Arrays.asList(
-                new EventPost(EVENT_TITLE_1, DESCRIPTION, Calendar.getInstance(), Calendar.getInstance(),
-                        "Tbilisi, Guramishvili Avenue", "baseball"),
-                new EventPost(EVENT_TITLE_2, DESCRIPTION, Calendar.getInstance(), Calendar.getInstance(),
-                        "Batumi, Chavchavadze Avenue", "handball"),
-                new EventPost(EVENT_TITLE_3, DESCRIPTION, Calendar.getInstance(), Calendar.getInstance(),
-                        "Kutaisi, Rustaveli Avenue", "powerlifting")
+                new Post.PostBuilder(true, EVENT_TITLE_1, "baseball", new User())
+                        .description(DESCRIPTION)
+                        .startTime(Calendar.getInstance().getTime())
+                        .endTime(Calendar.getInstance().getTime())
+                        .location("Tbilisi, Guramishvili Avenue")
+                        .build(),
+
+                new Post.PostBuilder(true, EVENT_TITLE_2, "handball", new User())
+                        .description(DESCRIPTION)
+                        .startTime(Calendar.getInstance().getTime())
+                        .endTime(Calendar.getInstance().getTime())
+                        .location("Batumi, Chavchavadze Avenue")
+                        .build(),
+
+                new Post.PostBuilder(true, EVENT_TITLE_3, "powerlifting", new User())
+                        .description(DESCRIPTION)
+                        .startTime(Calendar.getInstance().getTime())
+                        .endTime(Calendar.getInstance().getTime())
+                        .location("Kutaisi, Rustaveli Avenue")
+                        .build()
         );
     }
 
-    public static List<Comment> getSampleComments() {
-        List<Comment> comments = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
-            comments.add(new Comment(USERNAME, COMMENT));
-        }
-
-        return comments;
-    }
+//    public static List<Comment> getSampleComments() {
+//        List<Comment> comments = new ArrayList<>();
+//        for (int i = 0; i < 3; i++) {
+//            comments.add(new Comment(USERNAME, COMMENT));
+//        }
+//
+//        return comments;
+//    }
 }

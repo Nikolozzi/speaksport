@@ -10,9 +10,12 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -31,8 +34,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.gmail.khitirinikoloz.speaksport.BuildConfig;
@@ -63,7 +66,7 @@ public class ProfileActivity extends AppCompatActivity {
             BuildConfig.APPLICATION_ID + ".ACTION_USER_UPDATE_BROADCAST";
     private static final int REQUEST_PICK_IMG = 1;
     private static final int REQUEST_EXTERNAL_STORAGE = 2;
-    private static final int IMAGE_QUALITY = 25;
+    public static final int IMAGE_QUALITY = 20;
     private EditText usernameEditText;
     private EditText emailEditText;
     private EditText fullNameEditText;
@@ -173,6 +176,15 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void selectPhoto() {
         final Intent intent = new Intent();
         intent.setType("image/*");
@@ -204,26 +216,23 @@ public class ProfileActivity extends AppCompatActivity {
                 if (imageUri != null) {
                     Glide.with(this)
                             .load(imageUri)
-                            .listener(new RequestListener<Uri, GlideDrawable>() {
+                            .listener(new RequestListener<Drawable>() {
                                 @Override
-                                public boolean onException(Exception e, Uri model, Target<GlideDrawable> target,
-                                                           boolean isFirstResource) {
+                                public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                                     return false;
                                 }
 
                                 @Override
-                                public boolean onResourceReady(GlideDrawable resource, Uri model, Target<GlideDrawable> target,
-                                                               boolean isFromMemoryCache, boolean isFirstResource) {
+                                public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
                                     if (resource != null) {
                                         progressBar.setVisibility(View.GONE);
-                                        Bitmap bitmapDrawable = ((GlideBitmapDrawable) resource).getBitmap();
+                                        Bitmap bitmapDrawable = ((BitmapDrawable) resource).getBitmap();
                                         String absPath = savePhotoToStorage(bitmapDrawable);
                                         sessionManager.saveProfileImage(absPath);
                                     }
                                     return false;
                                 }
-                            })
-                            .into(profileImg);
+                            }).into(profileImg);
                 }
             }
         });
